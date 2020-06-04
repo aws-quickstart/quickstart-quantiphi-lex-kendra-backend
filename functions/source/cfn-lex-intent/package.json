@@ -1,0 +1,20 @@
+{
+  "name": "cfn-lex-intent",
+  "version": "1.0.3",
+  "description": "AWS Lex Intent",
+  "main": "index.js",
+  "keywords": [
+    "aws",
+    "lex",
+    "bot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cfn-lambda": "2.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {}
+}
