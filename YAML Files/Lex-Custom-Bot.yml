@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ResourceTypeName:
+    Type: String
+  ResourceTypeVersion:
+    Type: String
+  CodeBucket:
+    Type: String
+Resources:
+  ServiceLambda:
+    Type: 'AWS::Lambda::Function'
+    DependsOn:
+      - ServiceLambdaRole
+    Properties:
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Sub '${ResourceTypeVersion}.zip'
+      FunctionName: !Sub '${ResourceTypeName}-${ResourceTypeVersion}'
+      Description: !Sub >-
+        CloudFormation Custom Resource service for Custom::${ResourceTypeName},
+        version ${ResourceTypeVersion}
+      Role: !GetAtt 
+        - ServiceLambdaRole
+        - Arn
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 300
+      MemorySize: 128
+  ServiceLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: 'sts:AssumeRole'
+  ServiceLambdaRolePolicy:
+    Type: 'AWS::IAM::Policy'
+    DependsOn:
+      - ServiceLambdaRole
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'logs:CreateLogGroup'
+              - 'logs:CreateLogStream'
+              - 'logs:PutLogEvents'
+            Resource: 'arn:aws:logs:*:*:*'
+          - Effect: Allow
+            Action:
+              - 'lex:DeleteBot'
+              - 'lex:GetBot'
+              - 'lex:PutBot'
+            Resource:
+              - '*'
+      PolicyName: !Sub '${ResourceTypeName}-${ResourceTypeVersion}-lambda-role-policy'
+      Roles:
+        - !Ref ServiceLambdaRole
+Outputs:
+  ServiceToken:
+    Description: >-
+      The Lambda function ARN to use for ServiceToken in Properties for any
+      future stack resources invoking this custom resource.
+    Value: !GetAtt 
+      - ServiceLambda
+      - Arn
+    Export:
+      Name: !Sub '${ResourceTypeName}-${ResourceTypeVersion}-ServiceToken'
+Description: Custom resource type installer stack for cfn-lex-bot-1-0-3

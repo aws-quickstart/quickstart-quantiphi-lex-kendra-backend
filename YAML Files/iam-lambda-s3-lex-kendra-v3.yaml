@@ -1,0 +1,656 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation Template for IAM
+
+Parameters: 
+  RoleName:
+    Description: IAM Role Name 
+    Type: String
+    Default: Lambda-Role
+  
+  PolicyName:
+    Description: IAM Policy Name
+    Type: String
+    Default: Lambda-Policy
+  
+  LambdaFunctionName:
+    Description: Name of Lambda Function
+    Type: String
+    Default: lex-kendra-covid-bot-template
+  
+  S3BucketName:
+    Description: Name of S3 Bucket in which Lambda code is present
+    Type: String
+    Default: lex-kendra-code
+  
+  S3BucketKey:
+    Description: S3 Key Name of Lambda Code
+    Type: String
+    Default: lex-kendra-covid-bot-latest.zip
+  
+  LambdaExecutionTimeout:
+    Description: Exection Timeout for Lambda Function
+    Type: String
+    Default: 300
+  
+  KendraS3BucketName:
+    Description: S3 bucket name for storing kendra documents
+    Type: String
+    Default: lex-kendra-data-template
+
+  KendraIndexName:
+    Description: Name of the Kendra Index
+    Type: String
+    Default: Lex-Kendra-Covid-Bot-Index-v7
+
+  KendraIndexEdition:
+    Description: Kendra Index Edition (DEVELOPER_EDITION or ENTERPRISE_EDITION)
+    Type: String
+    Default: DEVELOPER_EDITION
+
+  DataSourceName:
+    Description: Name of the Data Source for Kendra Index
+    Type: String
+    Default: lex-kendra-covid-bot-data-source
+
+  FAQName:
+    Description: Name of the FAQs for Kendra Index
+    Type: String
+    Default: lex-kendra-covid-bot-faqs
+
+  FAQFileKey:
+    Description: File where FAQs are stored
+    Type: String
+    Default: COVID_FAQ_2.csv
+
+  BotName:
+    Type: String
+    Default: covidbottest
+    Description: >-
+      Change this to do something that requires replacement of the Bot resource,
+      to test it.
+
+  IntentDescription:
+    Type: String
+    Default: COVID Qs
+    Description: >-
+      Change this for a non-replacement-required Update to the Intent, for
+      testing.
+      
+  BotDescription:
+    Type: String
+    Default: Bot which answers queries associated with COVID-19.
+    Description: 'Change this for a non-replacement-required Update to the Bot, for testing.'
+
+Resources: 
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - kendra.amazonaws.com
+            - lex.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      RoleName: !Ref RoleName
+
+  EbsBackupExecutionPolicy:
+    DependsOn:
+    - LambdaExecutionRole
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Ref PolicyName
+      Roles:
+      - Ref: LambdaExecutionRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:*
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - s3:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - dynamodb:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - lex:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - kendra:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - ssm:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - 'iam:GetRole'
+          - 'iam:PassRole'
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - lambda:*
+          Resource:
+          - "*"
+  KendraOperationsFunctiontest:
+    DependsOn:
+    - EbsBackupExecutionPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.6
+      Environment:
+        Variables:
+          RoleARN: !GetAtt LambdaExecutionRole.Arn
+          KendraIndexName: !Ref KendraIndexName
+          Edition: !Ref KendraIndexEdition
+          BotName: !Ref BotName
+      Timeout: 900
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: 256
+      Handler: Kendra_Custom_Resource_Code.handler
+      Code:
+        S3Bucket: lex-kendra-code
+        S3Key: Kendra-Custom-Resource-Code-v3.zip
+      Description: Lambda Kendra Function
+  
+  KendraFunctiontest: 
+    DependsOn:
+    - KendraOperationsFunctiontest
+    Type: Custom::KendraFunctiontest
+    Properties:
+      ServiceToken: !GetAtt KendraOperationsFunctiontest.Arn
+      DefaultReturn: 200
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: 
+      - KendraFunctiontest
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          USERNAME: <Write your UserName here>
+          PASSWORD: <Write your Password here>
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: !Ref S3BucketKey
+      Runtime: python3.6
+      Timeout: !Ref LambdaExecutionTimeout
+
+  lambdaPermission:
+    DependsOn: 
+      - LambdaFunction
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: lex.amazonaws.com
+  
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref KendraS3BucketName
+  
+  KendraDataSyncOperationsFunctiontest:
+    DependsOn: 
+      - LambdaFunction
+    Type: AWS::Lambda::Function
+    Properties: 
+      FunctionName: KendraDataSyncOperationsFunctiontest
+      Runtime: python3.6
+      Timeout: 900
+      MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          RoleARN: !GetAtt LambdaExecutionRole.Arn
+          DataSourceName: !Ref DataSourceName
+          FAQName: !Ref FAQName
+          FAQFileKey: !Ref FAQFileKey
+      Handler: DataSync.handler
+      Code:
+        S3Bucket: lex-kendra-code
+        S3Key: Kendra-Custom-DataSync-v1.zip 
+      Description: Lambda Kendra Function for Data Sync
+
+  KendraDataSyncFunctiontest: 
+    DependsOn: 
+      - KendraDataSyncOperationsFunctiontest
+    Type: Custom::KendraDataSyncFunctiontest
+    Properties:
+      ServiceToken: !GetAtt KendraDataSyncOperationsFunctiontest.Arn
+      DefaultReturn: 200
+
+  Treatmenttest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Treatmenttest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - What is the treatment for covid Nineteen
+        - treatment
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: To date, there is no specific medicine to prevent or
+              treat COVID-19. However, those affected should receive care to
+              relieve symptoms. People with serious illness should be
+              hospitalized. Most patients recover thanks to supportive care.
+              Antibiotics do not work against viruses; they only work on
+              bacterial infections. COVID-19 is caused by a virus, so
+              antibiotics do not work. Antibiotics should not be used as a means
+              of prevention or treatment of COVID-19. They should only be used
+              as directed by a physician to treat a bacterial infection.
+  Deathtest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Deathtest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - How many deaths have been reported in New Zealand
+        - death
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: According to Johns Hopkins University, as of today,
+              there are a total of <number> of people died from coronavirus in
+              <sys.geo-country>. The death rate in <> is <%>
+  Origintest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Origintest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - how did the virus start
+        - origin of virus
+        - from where it's originated
+        - first country to get
+        - outbreak of virus
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: COVID-19 was first detected in Wuhan City, Hubei
+              Province, China. The first infections were linked to a live animal
+              market, but the virus is now spreading from person-to-person.
+  RiskSeveritytest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: RiskSeveritytest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - Who is most at risk for coronavirus
+        - risk severity
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Everyone is at risk to get COVID-19, though not
+              everyone will have the same severity of symptons. The CDC has
+              stated that older adults and people of any age who have serious
+              underlying medical conditions may be at higher risk for more
+              serious complications from COVID-19.
+  Sicktest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Sicktest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - should I go to hospital if I feel sick
+        - m feeling sick what to do
+        - what should i do m not feeling ill
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Please contact your primary care provider if you or
+              your family members are having symptoms of COVID-19. If you are
+              experiencing a life threatening emergency, please call 911.
+  IndoorQuarantinetest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: IndoorQuarantinetest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - how long should I stay at home
+        - indoor quarantine
+        - quarantine
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: The Center for Disease Control and Prevention recommends that people stay at home if they are showing signs of COVID-19 infection. Please check your local authorities for specific self quarantine guidelines during any shelter in place.
+  NotSatisfiedtest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: NotSatisfiedtest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - I do not have the information I need
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Thank you for the feedback. Goodbye!
+  OutdoorActivitiestest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: OutdoorActivitiestest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - Can I still take a walk in the neighborhood
+        - outdoor activities
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Please check your local city, county, and state government website for specific guidelines during a shelter in place.
+  MyNametest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: MyNametest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - What's your name
+        - who are you
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: I'm the COVID-19 Rapid Response Bot.
+  WelcomeGreettest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: WelcomeGreettest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - welcome
+        - hello
+        - hi
+        - hey
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I'm not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?
+  SocialDistancingtest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: SocialDistancingtest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - Why is social distancing so important
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Social distancing is deliberately increasing the physical space between people to avoid spreading illness. Staying at least six feet away from other people decreases the possibility of catching COVID-19. Cancelling events that are likely to draw crowds is an example of social distancing.
+  LiveChattest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: LiveChattest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - I want to talk to a live agent.
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: Okay. I'm transferring you to a live agent right now.
+  Definetest:
+    Type: 'Custom::LexIntent'
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Definetest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - What is Covid Nineteen
+        - define covid
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: The World Health Organization states that Coronaviruses (CoV) are a large family of viruses that cause illness ranging from the common cold to a more severe lung infection. COVID-19 is the disease caused by a novel coronavirus.
+  IncubationPeriodtest:
+    Type: 'Custom::LexIntent'
+    DependsOn:
+      - LambdaFunction
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: IncubationPeriodtest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - How long is the incubation
+        - incubation period
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: According to the World Health Organization, the “incubation period” is the time between catching the virus and showing symptoms of the disease. Most estimates of the incubation period for COVID-19 range from 1-14 days, most commonly around five days. These estimates will be updated as more data becomes available.
+  Traveltest:
+    Type: 'Custom::LexIntent'
+    DependsOn:
+      - LambdaFunction
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Traveltest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        type: ReturnIntent
+      sampleUtterances:
+        - should I not travel during a disease outbreak
+      slots: []
+      conclusionStatement:
+        messages:
+          - groupNumber: 1
+            contentType: PlainText
+            content: >-
+              Amazon Lex: The CDC currently lists six locations with various levels of travel warnings: China, Iran, South Korea, Italy, Japan and Hong Kong. People traveling to these areas should take extreme caution and if trying to return to the United States, can expect restrictions on entry and quarantines upon return. The status of COVID-19 is changing every day, so continue to monitor the CDC’s list of travel notices before traveling.
+  Fallbacktest:
+    Type: 'Custom::LexIntent'
+    DependsOn:
+      - LambdaFunction
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-intent-1-0-3-ServiceToken
+      name: Fallbacktest
+      description: !Ref IntentDescription
+      fulfillmentActivity:
+        codeHook:
+          uri: !GetAtt LambdaFunction.Arn
+          messageVersion: '1.0'
+        type: CodeHook
+      sampleUtterances: []
+      slots: []
+      parentIntentSignature: AMAZON.FallbackIntent
+  covidbottest:
+    Type: 'Custom::LexBot'
+    DependsOn:
+      - Treatmenttest
+      - Deathtest
+      - Origintest
+      - RiskSeveritytest
+      - Sicktest
+      - IndoorQuarantinetest
+      - NotSatisfiedtest
+      - OutdoorActivitiestest
+      - MyNametest
+      - WelcomeGreettest
+      - SocialDistancingtest
+      - LiveChattest
+      - Definetest
+      - IncubationPeriodtest
+      - Traveltest
+      - Fallbacktest
+    Properties:
+      ServiceToken: !ImportValue cfn-lex-bot-1-0-3-ServiceToken
+      name: !Ref BotName
+      abortStatement:
+        messages:
+          - contentType: PlainText
+            content: 'Sorry, I could not understand. Goodbye.'
+      childDirected: false
+      description: !Ref BotDescription
+      idleSessionTTLInSeconds: 300
+      intents:
+        - intentName: Treatmenttest
+          intentVersion: $LATEST
+        - intentName: Deathtest
+          intentVersion: $LATEST
+        - intentName: Origintest
+          intentVersion: $LATEST
+        - intentName: RiskSeveritytest
+          intentVersion: $LATEST
+        - intentName: Sicktest
+          intentVersion: $LATEST
+        - intentName: IndoorQuarantinetest
+          intentVersion: $LATEST
+        - intentName: NotSatisfiedtest
+          intentVersion: $LATEST
+        - intentName: OutdoorActivitiestest
+          intentVersion: $LATEST
+        - intentName: MyNametest
+          intentVersion: $LATEST
+        - intentName: WelcomeGreettest
+          intentVersion: $LATEST
+        - intentName: SocialDistancingtest
+          intentVersion: $LATEST
+        - intentName: LiveChattest
+          intentVersion: $LATEST
+        - intentName: Definetest
+          intentVersion: $LATEST
+        - intentName: IncubationPeriodtest
+          intentVersion: $LATEST
+        - intentName: Traveltest
+          intentVersion: $LATEST
+        - intentName: Fallbacktest
+          intentVersion: $LATEST
+      locale: en-US
+      processBehavior: BUILD
+
+Outputs:
+  IAMRoleName:
+    Description: Name of IAM Role
+    Value: !Ref LambdaExecutionRole
+  
+  IAMRoleARN:
+    Description: ARN of IAM Role
+    Value: !GetAtt LambdaExecutionRole.Arn
+  
+  Kendra:
+    Description: Create Kendra Result
+    Value: !Ref KendraOperationsFunctiontest
+
+  DataSourceSync:
+    Description: Create DataSource Sync Result
+    Value: !Ref KendraDataSyncOperationsFunctiontest
+
+  LambdaFunctionName:
+    Description: Lambda Function Name
+    Value: !Ref LambdaFunction
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function
+    Value: !GetAtt LambdaFunction.Arn
+
+  COVIDBotChecksum:
+    Description: The checksum of the Lex Bot for this stack.
+    Value: !GetAtt 
+      - covidbottest
+      - checksum
+
+  COVIDBotVersion:
+    Description: The version of the Lex Bot for this stack.
+    Value: !GetAtt 
+      - covidbottest
+      - version
