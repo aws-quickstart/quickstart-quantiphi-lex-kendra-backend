@@ -1,0 +1,149 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A Cloudformation template to create the handler lambda function which will query the Kendra Index
+
+Parameters:     
+  LambdaFunctionRole:
+    Description: Lambda function IAM role name 
+    Type: String
+    Default: Lambda-Function-Role
+
+  LambdaFunctionPolicy:
+    Description: Lambda function IAM policy name 
+    Type: String
+    Default: Lambda-Function-Policy
+
+  LambdaFunctionName:
+    Description: The name of Lambda function which handles querying of the Index
+    Type: String
+    Default: lex-kendra-covid-bot-template
+  
+  ArtifactsS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of S3 bucket in which Lambda code is present
+    Type: String
+  
+  S3BucketKeyFallbackIntentHandler:
+    AllowedPattern: ^.*.zip$
+    Description: The name of the S3 key which has the Lambda code for handling Fallback Intent
+    Type: String
+
+  KendraS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of the S3 bucket which has the Kendra docs for syncing
+    Type: String
+
+Resources: 
+  LambdaFunctionIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - kendra.amazonaws.com
+            - lex.amazonaws.com
+            - s3.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      RoleName: !Ref LambdaFunctionRole
+
+  LambdaFunctionIAMPolicy:
+    DependsOn:
+    - LambdaFunctionIAMRole
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Ref LambdaFunctionPolicy
+      Roles:
+      - Ref: LambdaFunctionIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadBucket"
+          Resource:
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
+          - !Sub "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - lex:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - kendra:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "iam:GetRole"
+          - "iam:PassRole"
+          Resource:
+          - !Sub "arn:aws:iam::${AWS::AccountId}:role/${LambdaFunctionRole}"
+        - Effect: Allow
+          Action:
+          - lambda:*
+          Resource:
+          - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}"
+  
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: 
+      - LambdaFunctionIAMRole
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaFunctionIAMRole.Arn
+      Environment:
+        Variables:
+          KENDRA_DATA_BUCKET: !Ref KendraS3BucketName
+          KENDRA_INDEX: !ImportValue KendraIndexID
+      Code:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Ref S3BucketKeyFallbackIntentHandler
+      Runtime: python3.6
+      Timeout: 300
+
+  LambdaPermission:
+    DependsOn: 
+      - LambdaFunction
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: lex.amazonaws.com
+   
+
+Outputs:
+  IAMRoleName:
+    Description: Name of IAM Role used for handling Fallback Intent
+    Value: !Ref LambdaFunctionIAMRole
+  
+  IAMRoleARN:
+    Description: ARN of IAM Role used for handling Fallback Intent
+    Value: !GetAtt LambdaFunctionIAMRole.Arn
+  
+  LambdaFunctionName:
+    Description: Lambda Function Name used for handling Fallback Intent
+    Value: !Ref LambdaFunction
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function used for handling Fallback Intent
+    Value: !GetAtt LambdaFunction.Arn
+
