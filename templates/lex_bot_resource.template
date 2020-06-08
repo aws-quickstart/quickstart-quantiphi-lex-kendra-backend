@@ -1,0 +1,169 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
+
+Parameters: 
+  LexBotRole:
+    Description: Lex bot IAM role name 
+    Type: String
+    Default: Lex-Bot-Role
+
+  LexBotPolicy:
+    Description: Lex bot IAM policy name 
+    Type: String
+    Default: Lex-Bot-Policy
+  
+  LexBotS3FileKey:
+    AllowedPattern: ^.*.json$
+    Description: The S3 file key where Lex bot JSON is stored
+    Type: String
+
+  S3BucketKeyLexBotOps:
+    AllowedPattern: ^.*.zip$
+    Description: The S3 file key of the Lambda Code for Lex Bot Operations
+    Type: String
+
+  ArtifactsS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of S3 Bucket in which Lambda code is present
+    Type: String
+
+  S3BucketLambdaLayerKey:
+    AllowedPattern: ^.*.zip$
+    Description: The name of the S3 key which has the layer libraries
+    Type: String
+
+  LambdaFunctionARN:
+    AllowedPattern: arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?
+    Description: ARN of Fallback intent Lambda
+    Type: String
+
+  LexBotOpsFunctionName:
+    Description: Name of Lambda function for Lex bot setup
+    Type: String
+    
+
+Resources: 
+  LexBotIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lex.amazonaws.com
+            - s3.amazonaws.com
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      RoleName: !Ref LexBotRole
+
+  LexBotIAMPolicy:
+    DependsOn:
+    - LexBotIAMRole
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Ref LexBotPolicy
+      Roles:
+      - Ref: LexBotIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadBucket"
+          Resource:
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
+          - !Sub "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - lex:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "iam:GetRole"
+          - "iam:PassRole"
+          Resource:
+          - !Sub "arn:aws:iam::${AWS::AccountId}:role/${LexBotRole}"
+        - Effect: Allow
+          Action:
+          - "lambda:AddPermission"
+          - "lambda:RemovePermission"
+          Resource:
+          - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LexBotOpsFunctionName}"
+        - Effect: Allow
+          Action:
+          - "events:PutRule"
+          - "events:DeleteRule"
+          - "events:PutTargets"
+          - "events:RemoveTargets"
+          Resource:
+          - "*"
+
+  CrHelperLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.6
+        - python3.7
+      Content:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Ref S3BucketLambdaLayerKey
+
+  LexBotOpsFunction:
+    DependsOn:
+    - LexBotIAMPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LexBotOpsFunctionName
+      Runtime: python3.6          
+      Timeout: 600
+      Role: !GetAtt LexBotIAMRole.Arn
+      MemorySize: 256
+      Handler: lex_bot_custom_resource.lambda_handler
+      Layers: [!Ref CrHelperLayer]
+      Code:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Ref S3BucketKeyLexBotOps
+      Description: Lambda backed Custom-Resource for Lex bot operations
+
+  LexBotOpsFunctionTrigger:
+    DependsOn: 
+      - LexBotOpsFunction
+    Type: Custom::LexBotOpsFunctionTrigger
+    Properties:
+      ServiceToken: !GetAtt LexBotOpsFunction.Arn
+      LexS3Bucket: !Ref ArtifactsS3BucketName
+      LexFileKey: !Ref LexBotS3FileKey
+      FulfillmentLambda: !Ref LambdaFunctionARN
+
+Outputs:
+  IAMRoleName:
+    Description: Name of IAM Role used for Lex Custom Resource Operations
+    Value: !Ref LexBotIAMRole
+  
+  IAMRoleARN:
+    Description: ARN of IAM Role for used Lex Custom Resource Operations
+    Value: !GetAtt LexBotIAMRole.Arn
+
+  LambdaFunctionName:
+    Description: Name of Lambda function used for Lex Custom Resource Operations
+    Value: !Ref LexBotOpsFunction
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function used for Lex Custom Resource Operations
+    Value: !GetAtt LexBotOpsFunction.Arn
+
+

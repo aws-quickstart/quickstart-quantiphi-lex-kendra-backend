@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
+
+Parameters: 
+  KendraIndexRole:
+    Description: Kendra Index IAM role name 
+    Type: String
+    Default: Kendra-Index-Role
+
+  KendraIndexPolicy:
+    Description: Kendra Index IAM policy name 
+    Type: String
+    Default: Kendra-Index-Policy
+
+  S3BucketKeyKendraIndexOps:
+    AllowedPattern: ^.*.zip$
+    Description: The name of the S3 Key which has the Lambda code for creation of Index
+    Type: String
+  
+  KendraS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of the S3 bucket which has the Kendra docs for syncing
+    Type: String
+
+  KendraIndexName:
+    Description: The name of the Kendra Index
+    Type: String
+    Default: Lex-Kendra-Covid-Bot-Index
+
+  KendraIndexEdition:
+    Description: Kendra Index Edition (DEVELOPER_EDITION or ENTERPRISE_EDITION)
+    Type: String
+    AllowedValues: 
+      - DEVELOPER_EDITION
+      - ENTERPRISE_EDITION
+    Default: DEVELOPER_EDITION
+
+  KendraDataSourceName:
+    Description: The name of sata source for the Kendra Index
+    Type: String
+    Default: lex-kendra-covid-bot-data-source
+
+  KendraFAQName:
+    Description: The name of FAQs for the Kendra Index
+    Type: String
+    Default: lex-kendra-covid-bot-faqs
+
+  KendraFAQFileKey:
+    AllowedPattern: ^.*.csv$
+    Description: The file where FAQs are stored for the Kendra Index
+    Type: String
+
+  ArtifactsS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of S3 Bucket in which Lambda code is present
+    Type: String
+
+  KendraOperationsFunctionName:
+    Description: The name of lambda function responsible for Kendra Operations
+    Type: String
+    Default: KendraOperationsFunction 
+
+  S3BucketLambdaLayerKey:
+    AllowedPattern: ^.*.zip$
+    Description: The name of the S3 key which has the Layer libraries
+    Type: String
+
+Resources: 
+  KendraIndexIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - kendra.amazonaws.com
+            - s3.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      RoleName: !Ref KendraIndexRole
+
+  KendraIndexIAMPolicy:
+    DependsOn:
+    - KendraIndexIAMRole
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Ref KendraIndexPolicy
+      Roles:
+      - Ref: KendraIndexIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadBucket"
+          Resource:
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
+          - !Sub "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - kendra:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "iam:GetRole"
+          - "iam:PassRole"
+          Resource:
+          - !Sub "arn:aws:iam::${AWS::AccountId}:role/${KendraIndexRole}"
+        - Effect: Allow
+          Action:
+          - lambda:*
+          Resource:
+          - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${KendraOperationsFunctionName}"
+        - Effect: Allow
+          Action:
+          - "events:PutRule"
+          - "events:DeleteRule"
+          - "events:PutTargets"
+          - "events:RemoveTargets"
+          Resource:
+          - "*"
+
+  KendraOperationsFunction:
+    DependsOn:
+    - KendraIndexIAMPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Layers: [!Ref CrHelperLayer]
+      FunctionName: !Ref KendraOperationsFunctionName
+      Runtime: python3.6          
+      Timeout: 900
+      Role: !GetAtt KendraIndexIAMRole.Arn
+      MemorySize: 256
+      Handler: kendra_custom_resource.lambda_handler
+      Code:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Ref S3BucketKeyKendraIndexOps
+      Description: Lambda backed Custom Resource for Kendra Index Operations
+
+  CrHelperLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.6
+        - python3.7
+      Content:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Ref S3BucketLambdaLayerKey
+  
+  KendraCustomResource: 
+    DependsOn:
+    - KendraOperationsFunction
+    Type: Custom::KendraCustomResource
+    Properties:
+      ServiceToken: !GetAtt KendraOperationsFunction.Arn
+      IndexRoleArn: !GetAtt KendraIndexIAMRole.Arn
+      IndexName: !Ref KendraIndexName
+      Edition: !Ref KendraIndexEdition
+      DataSourceName: !Ref KendraDataSourceName
+      KendraS3Bucket: !Ref KendraS3BucketName
+      DataSourceRoleArn: !GetAtt KendraIndexIAMRole.Arn
+      FAQName: !Ref KendraFAQName
+      FAQRoleArn: !GetAtt KendraIndexIAMRole.Arn
+      FAQFileKey: !Ref KendraFAQFileKey
+
+Outputs:
+  IAMRoleName:
+    Description: Name of IAM Role
+    Value: !Ref KendraIndexIAMRole
+  
+  IAMRoleARN:
+    Description: ARN of IAM Role
+    Value: !GetAtt KendraIndexIAMRole.Arn
+
+  LambdaFunctionName:
+    Description: Name of Lambda function used for Kendra Index Custom Resource Operations
+    Value: !Ref KendraOperationsFunction
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function used for Kendra Index Custom Resource Operations
+    Value: !GetAtt KendraOperationsFunction.Arn
+
+  KendraIndexID:
+    Description: Index ID for the Kendra Index
+    Value: !GetAtt KendraCustomResource.KendraIndexId
+    Export:
+      Name: "KendraIndexID"
