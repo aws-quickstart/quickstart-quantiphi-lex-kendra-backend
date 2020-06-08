@@ -1,0 +1,25 @@
+project:
+  name: quickstart-lex-kendra
+  owner: sarvesh.virkud@quantiphi.com
+  package_lambda: false
+  lambda_zip_path: ./functions/packages/
+  regions:
+    - eu-west-1
+    - us-west-2
+    - us-east-1
+tests:
+  quickstart-quantiphi:
+    parameters:
+      KendraIndexS3Key: quickstart-lex-kendra/templates/kendra_resource.template
+      S3BucketKeyKendraIndexOps: quickstart-lex-kendra/functions/packages/kendra_custom_resource/kendra_custom_resource.zip
+      KendraS3BucketName: $[taskcat_autobucket]
+      KendraFAQFileKey: quickstart-lex-kendra/assets/FAQ-document/COVID_FAQ.csv
+      FallbackIntentS3Key: quickstart-lex-kendra/templates/lambda_query_kendra.template
+      ArtifactsS3BucketName: $[taskcat_autobucket]
+      S3BucketKeyFallbackIntentHandler: quickstart-lex-kendra/functions/packages/fallback_intent_handler_lambda/fallback_intent_handler_lambda.zip
+      S3BucketLambdaLayerKey: quickstart-lex-kendra/functions/packages/lambda_layers/layer.zip
+      LexBotS3Key: quickstart-lex-kendra/templates/lex_bot_resource.template
+      LexBotS3FileKey: quickstart-lex-kendra/assets/lex-bot-template/covid_bot_Export.json
+      S3BucketKeyLexBotOps: quickstart-lex-kendra/functions/packages/lex_custom_resource/lex_bot_custom_resource.zip
+      CopyPackagesS3Key: quickstart-lex-kendra/templates/copy_artifacts.template
+    template: ./templates/lex_bot_kendra_master.template
