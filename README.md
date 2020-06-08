@@ -14,4 +14,4 @@ The Quick Start automates the following:
 - Deploying the COVID 19 Amazon Lex chatbot and Kendra Index with COVID 19 data repository
 - Deploying an Amazon Lex chatbot and Kendra Index with custom intents and data repository
 
-Architecture Diagram is in progress
+The Process Flow diagram is present above.
