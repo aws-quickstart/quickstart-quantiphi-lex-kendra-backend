@@ -36,6 +36,13 @@ Metadata:
           - LambdaFunctionName
       - 
         Label: 
+          default: "Copy artifacts configuration"
+        Parameters: 
+          - CopyPackagesS3Key
+          - CopyLambdaFunctionRole
+          - CopyLambdaFunctionPolicy
+      - 
+        Label: 
           default: "Deployment package configuration"
         Parameters: 
           - ArtifactsS3BucketName
@@ -93,6 +100,12 @@ Metadata:
         default: Name of Kendra Operations handler function
       LexBotOpsFunctionName:
         default: Name of Lex bot Operations handler function
+      CopyPackagesS3Key:
+        default: S3 key for copy artifact template file
+      CopyLambdaFunctionRole:
+        default: Name of role for copy artifact lambda custom resource
+      CopyLambdaFunctionPolicy:
+        default: Name of policy for copy artifact lambda custom resource
 
 Parameters:
   KendraIndexS3Key:
@@ -215,10 +228,39 @@ Parameters:
     Type: String
     Default: LexBotOpsFunction
 
+  CopyPackagesS3Key:
+    Description: Key of template file responsible for copying Lambdas
+    Type: String
+
+  CopyLambdaFunctionRole:
+    Type: String
+    Description: Name of IAM role for copying lambda packages
+    Default: CopyLambdaIamRole
+
+  CopyLambdaFunctionPolicy:
+    Type: String 
+    Description: Name of IAM policy  for copying lambda packages
+    Default: CopyLambdaPolicy
+ 
 
 Resources:
+  CopyPackagesStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${CopyPackagesS3Key}"
+      Parameters:
+        CopyLambdaFunctionRole: !Ref CopyLambdaFunctionRole
+        CopyLambdaFunctionPolicy: !Ref CopyLambdaFunctionPolicy
+        SourceBucket: !Ref ArtifactsS3BucketName
+        S3BucketKeyKendraIndexOps: !Ref S3BucketKeyKendraIndexOps
+        S3BucketKeyFallbackIntentHandler: !Ref S3BucketKeyFallbackIntentHandler
+        S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
+        LexBotS3FileKey: !Ref LexBotS3FileKey
+        S3BucketKeyLexBotOps: !Ref S3BucketKeyLexBotOps
+
   KendraIndexStack:
     Type: 'AWS::CloudFormation::Stack'
+    DependsOn: CopyPackagesStack
     Properties:
       TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${KendraIndexS3Key}"
       Parameters:
@@ -232,7 +274,7 @@ Resources:
         KendraFAQName: !Ref KendraFAQName
         KendraFAQFileKey: !Ref KendraFAQFileKey
         S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
-        ArtifactsS3BucketName: !Ref ArtifactsS3BucketName
+        ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
         KendraOperationsFunctionName: !Ref KendraOperationsFunctionName
 
   FallbackIntentStack:
@@ -244,7 +286,7 @@ Resources:
         LambdaFunctionRole: !Ref LambdaFunctionRole
         LambdaFunctionPolicy: !Ref LambdaFunctionPolicy
         LambdaFunctionName: !Ref LambdaFunctionName
-        ArtifactsS3BucketName: !Ref ArtifactsS3BucketName
+        ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
         S3BucketKeyFallbackIntentHandler: !Ref S3BucketKeyFallbackIntentHandler
         KendraS3BucketName: !Ref KendraS3BucketName
 
@@ -259,7 +301,7 @@ Resources:
         LexBotS3FileKey: !Ref LexBotS3FileKey
         S3BucketKeyLexBotOps: !Ref S3BucketKeyLexBotOps
         S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
-        ArtifactsS3BucketName: !Ref ArtifactsS3BucketName
+        ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
         LambdaFunctionARN: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}"
         LexBotOpsFunctionName: !Ref LexBotOpsFunctionName
 
