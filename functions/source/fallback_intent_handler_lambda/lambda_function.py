@@ -88,5 +88,5 @@ def fallback_intent_handler(intent_request, session_attributes):
 
 
 HANDLERS = {
-    'Fallbacktest': {'handler': fallback_intent_handler}
+    'Fallback': {'handler': fallback_intent_handler}
 }
