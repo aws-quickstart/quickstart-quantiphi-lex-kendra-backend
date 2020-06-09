@@ -5,7 +5,7 @@ Metadata:
     ParameterGroups:
       -
         Label:
-          default: "Quick Start Parameters"
+          default: "AWS Quick Start Parameters configuration"
           Parameters:
             - QSS3BucketName
             - QSS3BucketRegion
@@ -282,3 +282,11 @@ Resources:
         LexBotOpsFunctionName: !Ref LexBotOpsFunctionName
         LexBotJSONKey: !Ref LexBotJSONKey
 
+Outputs:
+  KendraIndexName:
+    Description: Name of the Kendra Index
+    Value: !Ref KendraIndexName
+  
+  FallbackIntentLambdaFunctionName:
+    Description: Name of Lambda Function which handles fallback intent
+    Value: !Ref LambdaFunctionName
