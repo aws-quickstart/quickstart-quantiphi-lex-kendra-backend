@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
 
 Parameters: 
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    
   KendraIndexRole:
     Description: Kendra Index IAM role name 
     Type: String
@@ -11,11 +17,6 @@ Parameters:
     Description: Kendra Index IAM policy name 
     Type: String
     Default: Kendra-Index-Policy
-
-  S3BucketKeyKendraIndexOps:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 Key which has the Lambda code for creation of Index
-    Type: String
   
   KendraS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
@@ -59,11 +60,6 @@ Parameters:
     Description: The name of lambda function responsible for Kendra Operations
     Type: String
     Default: KendraOperationsFunction 
-
-  S3BucketLambdaLayerKey:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Layer libraries
-    Type: String
 
 Resources: 
   KendraIndexIAMRole:
@@ -150,7 +146,7 @@ Resources:
       Handler: kendra_custom_resource.lambda_handler
       Code:
         S3Bucket: !Ref ArtifactsS3BucketName
-        S3Key: !Ref S3BucketKeyKendraIndexOps
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/kendra_custom_resource/kendra_custom_resource.zip"
       Description: Lambda backed Custom Resource for Kendra Index Operations
 
   CrHelperLayer:
@@ -161,7 +157,7 @@ Resources:
         - python3.7
       Content:
         S3Bucket: !Ref ArtifactsS3BucketName
-        S3Key: !Ref S3BucketLambdaLayerKey
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lambda_layers/lambda_layers.zip"
   
   KendraCustomResource: 
     DependsOn:
