@@ -5,7 +5,7 @@
     "importFormat": "JSON"
   },
   "resource": {
-    "name": "covid_bot",
+    "name": "covid_nineteen_bot",
     "version": "2",
     "intents": [
       {

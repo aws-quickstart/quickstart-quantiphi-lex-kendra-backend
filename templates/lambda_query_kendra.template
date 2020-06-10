@@ -1,7 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: A Cloudformation template to create the handler lambda function which will query the Kendra Index
 
-Parameters:     
+Parameters:      
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    
   LambdaFunctionRole:
     Description: Lambda function IAM role name 
     Type: String
@@ -20,11 +26,6 @@ Parameters:
   ArtifactsS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
     Description: The name of S3 bucket in which Lambda code is present
-    Type: String
-  
-  S3BucketKeyFallbackIntentHandler:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Lambda code for handling Fallback Intent
     Type: String
 
   KendraS3BucketName:
@@ -116,7 +117,7 @@ Resources:
           KENDRA_INDEX: !ImportValue KendraIndexID
       Code:
         S3Bucket: !Ref ArtifactsS3BucketName
-        S3Key: !Ref S3BucketKeyFallbackIntentHandler
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/fallback_intent_handler_lambda/fallback_intent_handler_lambda.zip"
       Runtime: python3.6
       Timeout: 300
 

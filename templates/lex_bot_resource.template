@@ -1,7 +1,20 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
 
-Parameters: 
+Parameters:
+  QSS3BucketName:
+    Type: String
+    Description: >-
+      The S3 bucket created for your copy of Quick Start assets
+    Default: aws-quickstart
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+
   LexBotRole:
     Description: Lex bot IAM role name 
     Type: String
@@ -12,24 +25,14 @@ Parameters:
     Type: String
     Default: Lex-Bot-Policy
   
-  LexBotS3FileKey:
-    AllowedPattern: ^.*.json$
-    Description: The S3 file key where Lex bot JSON is stored
-    Type: String
-
-  S3BucketKeyLexBotOps:
-    AllowedPattern: ^.*.zip$
-    Description: The S3 file key of the Lambda Code for Lex Bot Operations
-    Type: String
-
   ArtifactsS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
     Description: The name of S3 Bucket in which Lambda code is present
     Type: String
 
-  S3BucketLambdaLayerKey:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the layer libraries
+  LexBotJSONKey:
+    AllowedPattern: ^.*.json$
+    Description: JSON configuration of the Lex bot
     Type: String
 
   LambdaFunctionARN:
@@ -120,7 +123,7 @@ Resources:
         - python3.7
       Content:
         S3Bucket: !Ref ArtifactsS3BucketName
-        S3Key: !Ref S3BucketLambdaLayerKey
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lambda_layers/lambda_layers.zip"
 
   LexBotOpsFunction:
     DependsOn:
@@ -136,7 +139,7 @@ Resources:
       Layers: [!Ref CrHelperLayer]
       Code:
         S3Bucket: !Ref ArtifactsS3BucketName
-        S3Key: !Ref S3BucketKeyLexBotOps
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lex_custom_resource/lex_custom_resource.zip"
       Description: Lambda backed Custom-Resource for Lex bot operations
 
   LexBotOpsFunctionTrigger:
@@ -146,7 +149,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt LexBotOpsFunction.Arn
       LexS3Bucket: !Ref ArtifactsS3BucketName
-      LexFileKey: !Ref LexBotS3FileKey
+      LexFileKey: !Ref LexBotJSONKey
       FulfillmentLambda: !Ref LambdaFunctionARN
 
 Outputs:

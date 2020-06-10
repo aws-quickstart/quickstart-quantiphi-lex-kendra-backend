@@ -2,21 +2,26 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: A master template which launches a Kendra Index alongwith a Lex Bot showcasing the integration between the two services
 Metadata: 
   AWS::CloudFormation::Interface: 
-    ParameterGroups: 
+    ParameterGroups:
+      -
+        Label:
+          default: "AWS Quick Start Parameters configuration"
+          Parameters:
+            - QSS3BucketName
+            - QSS3BucketRegion
+            - QSS3KeyPrefix
       - 
         Label: 
           default: "Lex bot configuration"
         Parameters: 
-          - LexBotS3Key
           - LexBotRole
           - LexBotPolicy
-          - LexBotS3FileKey
           - LexBotOpsFunctionName
+          - LexBotJSONKey
       - 
         Label: 
           default: "Kendra index configuration"
         Parameters: 
-          - KendraIndexS3Key
           - KendraIndexRole
           - KendraIndexPolicy
           - KendraIndexName
@@ -30,7 +35,6 @@ Metadata:
         Label: 
           default: "Lambda configuration"
         Parameters: 
-          - FallbackIntentS3Key
           - LambdaFunctionRole
           - LambdaFunctionPolicy
           - LambdaFunctionName
@@ -38,52 +42,34 @@ Metadata:
         Label: 
           default: "Copy artifacts configuration"
         Parameters: 
-          - CopyPackagesS3Key
           - CopyLambdaFunctionRole
           - CopyLambdaFunctionPolicy
-      - 
-        Label: 
-          default: "Deployment package configuration"
-        Parameters: 
-          - ArtifactsS3BucketName
-          - S3BucketKeyKendraIndexOps
-          - S3BucketKeyLexBotOps
-          - S3BucketKeyFallbackIntentHandler
-          - S3BucketLambdaLayerKey
-    
+      
     ParameterLabels: 
-      FallbackIntentS3Key:
-        default: S3 key for Fallback intent lambda handler template
+      QSS3BucketName:
+        default: Your Bucket Configured for Quickstart
+      QSS3BucketRegion:
+        default: Region of Quickstart bucket
+      QSS3KeyPrefix:
+        default: S3 prefix where you want to sync you git Repo
       LambdaFunctionRole: 
         default: Role for fallback intent handling lambda
       LambdaFunctionPolicy: 
         default: Policy for fallback intent handling lambda
       LambdaFunctionName: 
         default: Name of fallback intent handling lambda
-      ArtifactsS3BucketName: 
-        default: S3 bucket which stores all code files
-      S3BucketKeyFallbackIntentHandler: 
-        default: S3 key which has the handler for Fallback Intent
-      S3BucketLambdaLayerKey: 
-        default: S3 key with Lambda layer libraries
-      LexBotS3Key:
-        default: S3 key for Lex bot template
+      LexBotJSONKey:
+        default: S3 key of JSON configuration of the Lex bot
       LexBotRole: 
         default: Role for Lex bot Ops
       LexBotPolicy: 
         default: Policy for Lex bot Ops
-      LexBotS3FileKey: 
-        default: S3 key for Lex bot JSON
       S3BucketKeyLexBotOps: 
         default: S3 key for Lex bot Ops
-      KendraIndexS3Key:
-        default: S3 key for Kendra Index template
       KendraIndexRole: 
         default: Role for Kendra Ops
       KendraIndexPolicy: 
         default: Policy for Kendra Ops
-      S3BucketKeyKendraIndexOps: 
-        default: S3 key for Kendra Index Ops
       KendraS3BucketName: 
         default: S3 bucket with documents
       KendraIndexName: 
@@ -100,17 +86,29 @@ Metadata:
         default: Name of Kendra Operations handler function
       LexBotOpsFunctionName:
         default: Name of Lex bot Operations handler function
-      CopyPackagesS3Key:
-        default: S3 key for copy artifact template file
       CopyLambdaFunctionRole:
         default: Name of role for copy artifact lambda custom resource
       CopyLambdaFunctionPolicy:
         default: Name of policy for copy artifact lambda custom resource
 
 Parameters:
-  KendraIndexS3Key:
-    Description: Kendra Index S3 template Key
+  QSS3BucketName:
     Type: String
+    Description: >-
+      The S3 bucket created for your copy of Quick Start assets
+    Default: aws-quickstart
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+  
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.'
+    Type: String
+  
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
 
   KendraIndexRole:
     Description: Kendra Index IAM role name 
@@ -121,11 +119,6 @@ Parameters:
     Description: Kendra Index IAM policy name 
     Type: String
     Default: Kendra-Index-Policy
-
-  S3BucketKeyKendraIndexOps:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 Key which has the Lambda code for creation of Index
-    Type: String
   
   KendraS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
@@ -165,10 +158,6 @@ Parameters:
     Type: String
     Default: Lambda-Function-Role
 
-  FallbackIntentS3Key:
-    Description: Fallback Intent S3 template key
-    Type: String
-
   LambdaFunctionPolicy:
     Description: Lambda function IAM policy name 
     Type: String
@@ -178,25 +167,13 @@ Parameters:
     Description: The name of Lambda Function which handles querying of the index
     Type: String
     Default: lex-kendra-covid-bot-template
-  
-  ArtifactsS3BucketName:
-    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
-    Description: The name of S3 Bucket in which Lambda code is present
-    Type: String
-  
-  S3BucketKeyFallbackIntentHandler:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Lambda Code for handling Fallback Intent
-    Type: String
 
-  S3BucketLambdaLayerKey:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Layer libraries
+  LexBotJSONKey:
+    AllowedPattern: ^.*.json$
+    Description: JSON configuration of the Lex bot
     Type: String
+    Default: quickstart-quantiphi-lex-kendra-backend/assets/lex-bot-template/covid_bot_Export.json
 
-  LexBotS3Key:
-    Description: Lex bot S3 template Key
-    Type: String
 
   LexBotRole:
     Description: Lex bot IAM role name 
@@ -207,30 +184,16 @@ Parameters:
     Description: Lex bot IAM policy name 
     Type: String
     Default: Lex-Bot-Policy
-  
-  LexBotS3FileKey:
-    AllowedPattern: ^.*.json$
-    Description: The S3 file key where Lex bot JSON is stored
-    Type: String
 
   KendraOperationsFunctionName:
     Description: The name of Lambda function responsible for Kendra Operations
     Type: String
     Default: KendraOperationsFunction
 
-  S3BucketKeyLexBotOps:
-    AllowedPattern: ^.*.zip$
-    Description: The S3 file key of the Lambda Code for Lex bot Operations
-    Type: String
-
   LexBotOpsFunctionName:
     Description: The name of Lambda function responsible for Lex bot setup
     Type: String
     Default: LexBotOpsFunction
-
-  CopyPackagesS3Key:
-    Description: Key of template file responsible for copying Lambdas
-    Type: String
 
   CopyLambdaFunctionRole:
     Type: String
@@ -242,38 +205,44 @@ Parameters:
     Description: Name of IAM policy  for copying lambda packages
     Default: CopyLambdaPolicy
  
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 
 Resources:
   CopyPackagesStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${CopyPackagesS3Key}"
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/copy_artifacts.template'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         CopyLambdaFunctionRole: !Ref CopyLambdaFunctionRole
         CopyLambdaFunctionPolicy: !Ref CopyLambdaFunctionPolicy
-        SourceBucket: !Ref ArtifactsS3BucketName
-        S3BucketKeyKendraIndexOps: !Ref S3BucketKeyKendraIndexOps
-        S3BucketKeyFallbackIntentHandler: !Ref S3BucketKeyFallbackIntentHandler
-        S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
-        LexBotS3FileKey: !Ref LexBotS3FileKey
-        S3BucketKeyLexBotOps: !Ref S3BucketKeyLexBotOps
 
   KendraIndexStack:
     Type: 'AWS::CloudFormation::Stack'
     DependsOn: CopyPackagesStack
     Properties:
-      TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${KendraIndexS3Key}"
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         KendraIndexRole: !Ref KendraIndexRole
         KendraIndexPolicy: !Ref KendraIndexPolicy
-        S3BucketKeyKendraIndexOps: !Ref S3BucketKeyKendraIndexOps
         KendraS3BucketName: !Ref KendraS3BucketName
         KendraIndexName: !Ref KendraIndexName
         KendraIndexEdition: !Ref KendraIndexEdition
         KendraDataSourceName: !Ref KendraDataSourceName
         KendraFAQName: !Ref KendraFAQName
         KendraFAQFileKey: !Ref KendraFAQFileKey
-        S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
         ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
         KendraOperationsFunctionName: !Ref KendraOperationsFunctionName
 
@@ -281,27 +250,43 @@ Resources:
     Type: 'AWS::CloudFormation::Stack'
     DependsOn: KendraIndexStack
     Properties:
-      TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${FallbackIntentS3Key}"
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_query_kendra.template'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         LambdaFunctionRole: !Ref LambdaFunctionRole
         LambdaFunctionPolicy: !Ref LambdaFunctionPolicy
         LambdaFunctionName: !Ref LambdaFunctionName
         ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
-        S3BucketKeyFallbackIntentHandler: !Ref S3BucketKeyFallbackIntentHandler
         KendraS3BucketName: !Ref KendraS3BucketName
 
   LexBotStack:
     Type: 'AWS::CloudFormation::Stack'
     DependsOn: FallbackIntentStack
     Properties:
-      TemplateURL: !Sub "https://${ArtifactsS3BucketName}.s3.amazonaws.com/${LexBotS3Key}"
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters: 
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         LexBotRole: !Ref LexBotRole
         LexBotPolicy: !Ref LexBotPolicy
-        LexBotS3FileKey: !Ref LexBotS3FileKey
-        S3BucketKeyLexBotOps: !Ref S3BucketKeyLexBotOps
-        S3BucketLambdaLayerKey: !Ref S3BucketLambdaLayerKey
         ArtifactsS3BucketName: !GetAtt CopyPackagesStack.Outputs.TargetBucket
         LambdaFunctionARN: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}"
         LexBotOpsFunctionName: !Ref LexBotOpsFunctionName
+        LexBotJSONKey: !Ref LexBotJSONKey
 
+Outputs:
+  KendraIndexName:
+    Description: Name of the Kendra Index
+    Value: !Ref KendraIndexName
+  
+  FallbackIntentLambdaFunctionName:
+    Description: Name of Lambda Function which handles fallback intent
+    Value: !Ref LambdaFunctionName

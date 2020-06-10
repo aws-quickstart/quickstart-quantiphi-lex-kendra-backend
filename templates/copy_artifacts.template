@@ -1,15 +1,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
-  SourceBucket:
+  QSS3BucketName:
     Type: String
     Description: >-
-      The S3 bucket you have created for your copy of Quick Start assets, if you decide
-      to customize or extend the Quick Start for your own use. The bucket name can
-      include numbers, lowercase letters, uppercase letters, and hyphens, but should
-      not start or end with a hyphen.
+      The S3 bucket created for your copy of Quick Start assets
     Default: aws-quickstart
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
   
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.'
+    Type: String
+  
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    
   CopyLambdaFunctionRole:
     Type: String
     Description: IAM Role for Lambda
@@ -20,30 +28,6 @@ Parameters:
     Description: IAM Policy for Copy Lambda Function
     Default: CopyLambdaPolicy
 
-  S3BucketKeyKendraIndexOps:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 Key which has the Lambda code for creation of Index
-    Type: String
-
-  S3BucketKeyFallbackIntentHandler:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Lambda Code for handling Fallback Intent
-    Type: String
-
-  S3BucketLambdaLayerKey:
-    AllowedPattern: ^.*.zip$
-    Description: The name of the S3 key which has the Layer libraries
-    Type: String  
-
-  LexBotS3FileKey:
-    AllowedPattern: ^.*.json$
-    Description: The S3 file key where Lex bot JSON is stored
-    Type: String
-
-  S3BucketKeyLexBotOps:
-    AllowedPattern: ^.*.zip$
-    Description: The S3 file key of the Lambda Code for Lex bot Operations
-    Type: String
 
 Resources:
   LambdaFunctionIAMRole:
@@ -183,14 +167,14 @@ Resources:
     Properties:
       ServiceToken: !GetAtt 'CopyZipsFunction.Arn'
       DestBucket: !Ref 'LambdaZipsBucket'
-      SourceBucket: !Ref 'SourceBucket'
-      Prefix: ""
+      SourceBucket: !Ref 'QSS3BucketName'
+      Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
-        - !Ref S3BucketKeyKendraIndexOps
-        - !Ref S3BucketKeyFallbackIntentHandler
-        - !Ref S3BucketLambdaLayerKey
-        - !Ref LexBotS3FileKey
-        - !Ref S3BucketKeyLexBotOps
+        - "functions/packages/lambda_layers/lambda_layers.zip"
+        - "functions/packages/fallback_intent_handler_lambda/fallback_intent_handler_lambda.zip"
+        - "assets/lex-bot-template/covid_bot_Export.json"
+        - "functions/packages/lex_custom_resource/lex_custom_resource.zip"
+        - "functions/packages/kendra_custom_resource/kendra_custom_resource.zip"
 
 Outputs:
   TargetBucket:
