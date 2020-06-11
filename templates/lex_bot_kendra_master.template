@@ -172,7 +172,7 @@ Resources:
           - lambda:*
           Resource:
           - "*"
-  LambdaZipsBucket:
+  RegionalArtifactBucket:
     Type: AWS::S3::Bucket
 
   CopyZipsFunction:
@@ -246,7 +246,7 @@ Resources:
     Type: Custom::CopyZips
     Properties:
       ServiceToken: !GetAtt 'CopyZipsFunction.Arn'
-      DestBucket: !Ref 'LambdaZipsBucket'
+      DestBucket: !Ref 'RegionalArtifactBucket'
       SourceBucket: !Ref 'QSS3BucketName'
       Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
@@ -267,7 +267,7 @@ Resources:
         !Sub
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref LambdaZipsBucket]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         KendraS3BucketName: !Ref KendraS3BucketName
@@ -276,7 +276,7 @@ Resources:
         KendraDataSourceName: !Ref KendraDataSourceName
         KendraFAQName: !Ref KendraFAQName
         KendraFAQFileKey: !Ref KendraFAQFileKey
-        ArtifactsS3BucketName: !Ref 'LambdaZipsBucket'
+        ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
 
   FallbackIntentStack:
     Type: 'AWS::CloudFormation::Stack'
@@ -286,10 +286,10 @@ Resources:
         !Sub
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_query_kendra.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref LambdaZipsBucket]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        ArtifactsS3BucketName: !Ref 'LambdaZipsBucket'
+        ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         KendraS3BucketName: !Ref KendraS3BucketName
 
   LexBotStack:
@@ -299,10 +299,10 @@ Resources:
         !Sub
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref LambdaZipsBucket]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters: 
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        ArtifactsS3BucketName: !Ref 'LambdaZipsBucket'
+        ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         LambdaFunctionARN: !GetAtt FallbackIntentStack.Outputs.LambdaFunctionARN
         LexBotJSONKey: !Ref LexBotJSONKey
 
