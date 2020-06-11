@@ -2,28 +2,12 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
 
 Parameters:
-  QSS3BucketName:
-    Type: String
-    Description: >-
-      The S3 bucket created for your copy of Quick Start assets
-    Default: aws-quickstart
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
 
   QSS3KeyPrefix:
     Type: String
     Description: The S3 key name prefix used for your copy of Quick Start assets
     Default: quickstart-quantiphi-lex-kendra-backend/
     AllowedPattern: ^[0-9a-zA-Z-/]*$
-
-  LexBotRole:
-    Description: Lex bot IAM role name 
-    Type: String
-    Default: Lex-Bot-Role
-
-  LexBotPolicy:
-    Description: Lex bot IAM policy name 
-    Type: String
-    Default: Lex-Bot-Policy
   
   ArtifactsS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
@@ -38,10 +22,6 @@ Parameters:
   LambdaFunctionARN:
     AllowedPattern: arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?
     Description: ARN of Fallback intent Lambda
-    Type: String
-
-  LexBotOpsFunctionName:
-    Description: Name of Lambda function for Lex bot setup
     Type: String
     
 
@@ -60,14 +40,14 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
-      RoleName: !Ref LexBotRole
 
   LexBotIAMPolicy:
-    DependsOn:
-    - LexBotIAMRole
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: !Ref LexBotPolicy
+      PolicyName: !Join
+        - ''
+        - - !Ref 'LexBotIAMRole'
+          - _policy
       Roles:
       - Ref: LexBotIAMRole
       PolicyDocument:
@@ -87,7 +67,7 @@ Resources:
           - "s3:HeadBucket"
           Resource:
           - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
-          - !Sub "arn:aws:s3:*:*:accesspoint/*"
+          - "arn:aws:s3:*:*:accesspoint/*"
           - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
         - Effect: Allow
           Action:
@@ -99,13 +79,13 @@ Resources:
           - "iam:GetRole"
           - "iam:PassRole"
           Resource:
-          - !Sub "arn:aws:iam::${AWS::AccountId}:role/${LexBotRole}"
+          - !GetAtt LexBotIAMRole.Arn
         - Effect: Allow
           Action:
           - "lambda:AddPermission"
           - "lambda:RemovePermission"
           Resource:
-          - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LexBotOpsFunctionName}"
+          - "*"
         - Effect: Allow
           Action:
           - "events:PutRule"
@@ -130,7 +110,6 @@ Resources:
     - LexBotIAMPolicy
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Ref LexBotOpsFunctionName
       Runtime: python3.6          
       Timeout: 600
       Role: !GetAtt LexBotIAMRole.Arn
@@ -143,30 +122,24 @@ Resources:
       Description: Lambda backed Custom-Resource for Lex bot operations
 
   LexBotOpsFunctionTrigger:
-    DependsOn: 
-      - LexBotOpsFunction
     Type: Custom::LexBotOpsFunctionTrigger
     Properties:
       ServiceToken: !GetAtt LexBotOpsFunction.Arn
       LexS3Bucket: !Ref ArtifactsS3BucketName
-      LexFileKey: !Ref LexBotJSONKey
+      LexFileKey: !Sub "${QSS3KeyPrefix}${LexBotJSONKey}"
       FulfillmentLambda: !Ref LambdaFunctionARN
 
 Outputs:
-  IAMRoleName:
-    Description: Name of IAM Role used for Lex Custom Resource Operations
-    Value: !Ref LexBotIAMRole
   
   IAMRoleARN:
     Description: ARN of IAM Role for used Lex Custom Resource Operations
     Value: !GetAtt LexBotIAMRole.Arn
-
-  LambdaFunctionName:
-    Description: Name of Lambda function used for Lex Custom Resource Operations
-    Value: !Ref LexBotOpsFunction
   
   LambdaFunctionARN:
     Description: ARN of Lambda Function used for Lex Custom Resource Operations
     Value: !GetAtt LexBotOpsFunction.Arn
 
+  LexBotName:
+    Description: Lex Bot Name
+    Value: !GetAtt LexBotOpsFunctionTrigger.BotName
 
