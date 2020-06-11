@@ -7,16 +7,6 @@ Parameters:
     Description: The S3 key name prefix used for your copy of Quick Start assets
     Default: quickstart-quantiphi-lex-kendra-backend/
     AllowedPattern: ^[0-9a-zA-Z-/]*$
-    
-  KendraIndexRole:
-    Description: Kendra Index IAM role name 
-    Type: String
-    Default: Kendra-Index-Role
-
-  KendraIndexPolicy:
-    Description: Kendra Index IAM policy name 
-    Type: String
-    Default: Kendra-Index-Policy
   
   KendraS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
@@ -56,11 +46,6 @@ Parameters:
     Description: The name of S3 Bucket in which Lambda code is present
     Type: String
 
-  KendraOperationsFunctionName:
-    Description: The name of lambda function responsible for Kendra Operations
-    Type: String
-    Default: KendraOperationsFunction 
-
 Resources: 
   KendraIndexIAMRole:
     Type: AWS::IAM::Role
@@ -76,14 +61,14 @@ Resources:
             - s3.amazonaws.com
           Action:
           - sts:AssumeRole
-      RoleName: !Ref KendraIndexRole
 
   KendraIndexIAMPolicy:
-    DependsOn:
-    - KendraIndexIAMRole
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: !Ref KendraIndexPolicy
+      PolicyName: !Join
+        - ''
+        - - !Ref 'KendraIndexIAMRole'
+          - _policy
       Roles:
       - Ref: KendraIndexIAMRole
       PolicyDocument:
@@ -103,7 +88,7 @@ Resources:
           - "s3:HeadBucket"
           Resource:
           - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
-          - !Sub "arn:aws:s3:*:*:accesspoint/*"
+          - "arn:aws:s3:*:*:accesspoint/*"
           - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
           - !Sub "arn:aws:s3:::${KendraS3BucketName}"
           - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
@@ -117,12 +102,12 @@ Resources:
           - "iam:GetRole"
           - "iam:PassRole"
           Resource:
-          - !Sub "arn:aws:iam::${AWS::AccountId}:role/${KendraIndexRole}"
+          - !GetAtt KendraIndexIAMRole.Arn
         - Effect: Allow
           Action:
           - lambda:*
           Resource:
-          - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${KendraOperationsFunctionName}"
+          - "*"
         - Effect: Allow
           Action:
           - "events:PutRule"
@@ -138,7 +123,6 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Layers: [!Ref CrHelperLayer]
-      FunctionName: !Ref KendraOperationsFunctionName
       Runtime: python3.6          
       Timeout: 900
       Role: !GetAtt KendraIndexIAMRole.Arn
@@ -160,8 +144,6 @@ Resources:
         S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lambda_layers/lambda_layers.zip"
   
   KendraCustomResource: 
-    DependsOn:
-    - KendraOperationsFunction
     Type: Custom::KendraCustomResource
     Properties:
       ServiceToken: !GetAtt KendraOperationsFunction.Arn
@@ -176,17 +158,6 @@ Resources:
       FAQFileKey: !Ref KendraFAQFileKey
 
 Outputs:
-  IAMRoleName:
-    Description: Name of IAM Role
-    Value: !Ref KendraIndexIAMRole
-  
-  IAMRoleARN:
-    Description: ARN of IAM Role
-    Value: !GetAtt KendraIndexIAMRole.Arn
-
-  LambdaFunctionName:
-    Description: Name of Lambda function used for Kendra Index Custom Resource Operations
-    Value: !Ref KendraOperationsFunction
   
   LambdaFunctionARN:
     Description: ARN of Lambda Function used for Kendra Index Custom Resource Operations
