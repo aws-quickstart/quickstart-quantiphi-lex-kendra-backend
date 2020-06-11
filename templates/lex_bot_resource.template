@@ -126,7 +126,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt LexBotOpsFunction.Arn
       LexS3Bucket: !Ref ArtifactsS3BucketName
-      LexFileKey: !Ref LexBotJSONKey
+      LexFileKey: !Sub "${QSS3KeyPrefix}${LexBotJSONKey}"
       FulfillmentLambda: !Ref LambdaFunctionARN
 
 Outputs:

@@ -104,7 +104,7 @@ Parameters:
     AllowedPattern: ^.*.json$
     Description: JSON configuration of the Lex bot
     Type: String
-    Default: quickstart-quantiphi-lex-kendra-backend/assets/lex-bot-template/covid_bot_Export.json
+    Default: assets/lex-bot-template/covid_bot_Export.json
  
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
@@ -255,7 +255,7 @@ Resources:
         - "templates/kendra_resource.template"
         - "functions/packages/lambda_layers/lambda_layers.zip"
         - "functions/packages/fallback_intent_handler_lambda/fallback_intent_handler_lambda.zip"
-        - "assets/lex-bot-template/covid_bot_Export.json"
+        - !Ref LexBotJSONKey
         - "functions/packages/lex_custom_resource/lex_custom_resource.zip"
         - "functions/packages/kendra_custom_resource/kendra_custom_resource.zip"
 
