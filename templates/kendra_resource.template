@@ -94,7 +94,14 @@ Resources:
           - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
         - Effect: Allow
           Action:
-          - kendra:*
+          - "kendra:DeleteIndex"
+          - "kendra:CreateDataSource"
+          - "kendra:DescribeIndex"
+          - "kendra:CreateIndex"
+          - "kendra:StartDataSourceSyncJob"
+          - "kendra:CreateFaq"
+          - "kendra:TagResource"
+          - "kendra:UntagResource"
           Resource:
           - "*"
         - Effect: Allow
@@ -105,7 +112,9 @@ Resources:
           - !GetAtt KendraIndexIAMRole.Arn
         - Effect: Allow
           Action:
-          - lambda:*
+          - "lambda:InvokeFunction"
+          - "lambda:AddPermission"
+          - "lambda:RemovePermission"
           Resource:
           - "*"
         - Effect: Allow

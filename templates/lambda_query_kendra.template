@@ -68,12 +68,25 @@ Resources:
           - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
         - Effect: Allow
           Action:
-          - lex:*
+          - "lex:DeleteBot"
+          - "lex:DeleteSlotTypeVersion"
+          - "lex:GetBuiltinSlotTypes"
+          - "lex:GetSlotType"
+          - "lex:PutBot"
+          - "lex:PutSlotType"
+          - "lex:GetBot"
+          - "lex:GetSlotTypes"
+          - "lex:DeleteSlotType"
+          - "lex:DeleteIntent"
+          - "lex:GetIntent"
+          - "lex:PutIntent"
+          - "lex:DeleteIntentVersion"
+          - "lex:GetBuiltinIntents"
           Resource:
           - "*"
         - Effect: Allow
           Action:
-          - kendra:*
+          - "kendra:Query"
           Resource:
           - "*"
         - Effect: Allow
@@ -81,10 +94,12 @@ Resources:
           - "iam:GetRole"
           - "iam:PassRole"
           Resource:
-          - "*"
+          - !GetAtt LambdaFunctionIAMRole.Arn
         - Effect: Allow
           Action:
-          - lambda:*
+          - "lambda:InvokeFunction"
+          - "lambda:AddPermission"
+          - "lambda:RemovePermission"
           Resource:
           - "*"
   

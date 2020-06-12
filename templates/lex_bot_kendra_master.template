@@ -148,28 +148,40 @@ Resources:
           - arn:aws:logs:*:*:*
         - Effect: Allow
           Action:
-          - "s3:*"
+          - "s3:GetObject"
+          - "s3:GetObjectTagging"
+          - "s3:PutObject"
+          - "s3:PutObjectTagging"
+          - "s3:DeleteObject"
           Resource:
-          - "*"
-        - Effect: Allow
-          Action:
-          - lex:*
-          Resource:
-          - "*"
-        - Effect: Allow
-          Action:
-          - kendra:*
-          Resource:
-          - "*"
+          - "arn:aws:s3:*:*:accesspoint/*"
+          - !Join
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref RegionalArtifactBucket
+          - !Join
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref RegionalArtifactBucket
+              - '/*'
+          - !Join
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref QSS3BucketName
+          - !Join
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref QSS3BucketName
+              - '/*'
         - Effect: Allow
           Action:
           - "iam:GetRole"
           - "iam:PassRole"
           Resource:
-          - "*"
+          - !GetAtt LambdaFunctionIAMRole.Arn
         - Effect: Allow
           Action:
-          - lambda:*
+          - lambda:InvokeFunction
           Resource:
           - "*"
   RegionalArtifactBucket:

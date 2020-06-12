@@ -71,7 +71,21 @@ Resources:
           - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
         - Effect: Allow
           Action:
-          - lex:*
+          - "lex:DeleteBot"
+          - "lex:DeleteSlotTypeVersion"
+          - "lex:GetBuiltinSlotTypes"
+          - "lex:GetSlotType"
+          - "lex:PutBot"
+          - "lex:PutSlotType"
+          - "lex:GetBot"
+          - "lex:GetSlotTypes"
+          - "lex:DeleteSlotType"
+          - "lex:DeleteIntent"
+          - "lex:GetIntent"
+          - "lex:PutIntent"
+          - "lex:GetBotAliases"
+          - "lex:DeleteIntentVersion"
+          - "lex:GetBuiltinIntents"
           Resource:
           - "*"
         - Effect: Allow
