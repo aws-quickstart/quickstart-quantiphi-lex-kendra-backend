@@ -6,7 +6,7 @@ This Quick Start is for users who want to build and test a proof of concept or t
 
 This integration of the COVID 19 Lex chatbot with Kendra is a multifunctional chatbot, that can answer user queries based on pre-configured intents as well as query an S3 data repository containing the latest research using Amazon Kendra search capabilities.
 
-This Quick Start is available in all AWS Regions.
+This Quick Start is available in all the supported regions like us-east-1 (N. Virginia), us-west-2 (Oregon) and eu-west-1 (Ireland).
 
 You can use the AWS CloudFormation templates included with the Quick Start to deploy COVID 19 Lex-Kendra chatbot in your AWS account in about 35 minutes.
 The Quick Start automates the following:
