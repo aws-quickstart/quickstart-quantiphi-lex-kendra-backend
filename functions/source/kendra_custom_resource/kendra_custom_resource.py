@@ -7,6 +7,7 @@ FAQ for Kendra Index
 import os
 import logging
 import boto3
+import time
 from botocore import exceptions as botocore_exceptions
 from boto3 import exceptions as boto3_exceptions
 from crhelper import CfnResource
@@ -174,7 +175,12 @@ def create_kendra_data_source(kendra_index_id, resource_properties):
         data_source_kwargs['Description'] = resource_properties['IndexDescription']
     else:
         data_source_kwargs['Description'] = "Lex-Kendra-bot Data Source"
-    response_data_source = kendra_client.create_data_source(**data_source_kwargs)
+    
+    try:
+        response_data_source = kendra_client.create_data_source(**data_source_kwargs)
+    except:
+        time.sleep(15)
+        response_data_source = kendra_client.create_data_source(**data_source_kwargs)
     logger.info('DataSourceId: %s', str(response_data_source['Id']))
     return response_data_source['Id']
 

@@ -21,7 +21,7 @@ Parameters:
 
   LambdaFunctionARN:
     AllowedPattern: arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?
-    Description: ARN of Fallback intent Lambda
+    Description: ARN of Kendra Search intent Lambda
     Type: String
     
 
@@ -36,6 +36,7 @@ Resources:
           Principal:
             Service:
             - lex.amazonaws.com
+            - kendra.amazonaws.com
             - s3.amazonaws.com
             - lambda.amazonaws.com
           Action:
@@ -108,6 +109,11 @@ Resources:
           - "events:RemoveTargets"
           Resource:
           - "*"
+        - Effect: Allow
+          Action:
+          - "kendra:Query"
+          Resource:
+          - "*"
 
   CrHelperLayer:
     Type: AWS::Lambda::LayerVersion
@@ -128,7 +134,7 @@ Resources:
       Timeout: 600
       Role: !GetAtt LexBotIAMRole.Arn
       MemorySize: 256
-      Handler: lex_bot_custom_resource.lambda_handler
+      Handler: lex_custom_resource.lambda_handler
       Layers: [!Ref CrHelperLayer]
       Code:
         S3Bucket: !Ref ArtifactsS3BucketName
@@ -142,6 +148,9 @@ Resources:
       LexS3Bucket: !Ref ArtifactsS3BucketName
       LexFileKey: !Sub "${QSS3KeyPrefix}${LexBotJSONKey}"
       FulfillmentLambda: !Ref LambdaFunctionARN
+      KendraSearchRole: !GetAtt LexBotIAMRole.Arn
+      KendraIndex: !ImportValue KendraIndexID
+      AccountID: !Sub '${AWS::AccountId}'
 
 Outputs:
   

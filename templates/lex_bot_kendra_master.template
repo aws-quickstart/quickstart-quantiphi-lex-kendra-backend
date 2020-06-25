@@ -263,10 +263,10 @@ Resources:
       Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
         - "templates/lex_bot_resource.template"
-        - "templates/lambda_query_kendra.template"
+        - "templates/lambda_kendra_search.template"
         - "templates/kendra_resource.template"
         - "functions/packages/lambda_layers/lambda_layers.zip"
-        - "functions/packages/fallback_intent_handler_lambda/fallback_intent_handler_lambda.zip"
+        - "functions/packages/kendra_search_intent_handler_lambda/kendra_search_intent_handler_lambda.zip"
         - !Ref LexBotJSONKey
         - "functions/packages/lex_custom_resource/lex_custom_resource.zip"
         - "functions/packages/kendra_custom_resource/kendra_custom_resource.zip"
@@ -290,13 +290,13 @@ Resources:
         KendraFAQFileKey: !Ref KendraFAQFileKey
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
 
-  FallbackIntentStack:
+  KendraSearchIntentStack:
     Type: 'AWS::CloudFormation::Stack'
     DependsOn: KendraIndexStack
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_query_kendra.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_kendra_search.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
@@ -315,7 +315,7 @@ Resources:
       Parameters: 
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
-        LambdaFunctionARN: !GetAtt FallbackIntentStack.Outputs.LambdaFunctionARN
+        LambdaFunctionARN: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
         LexBotJSONKey: !Ref LexBotJSONKey
 
 Outputs:
@@ -323,9 +323,9 @@ Outputs:
     Description: Name of the Kendra Index
     Value: !Ref KendraIndexName
   
-  FallbackIntentLambdaFunctionName:
-    Description: Name of Lambda Function which handles fallback intent
-    Value: !GetAtt FallbackIntentStack.Outputs.LambdaFunctionARN
+  KendraSearchIntentLambdaFunctionName:
+    Description: Name of Lambda Function which handles Kendra Search intent
+    Value: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
 
   LexBotName:
     Description: Lex Bot Name

@@ -737,18 +737,42 @@
         }
       },
       {
-        "name": "Fallback",
-        "version": "2",
+        "name": "Kendra_Search_Intent",
+        "version": "9",
         "fulfillmentActivity": {
           "codeHook": {
-            "uri": "arn:aws:lambda:us-east-1:1234567890:function:func-name",
+            "uri": "arn:aws:lambda:region:1234567890:function:lambda",
             "messageVersion": "1.0"
           },
           "type": "CodeHook"
         },
         "sampleUtterances": [],
         "slots": [],
-        "parentIntentSignature": "AMAZON.FallbackIntent"
+        "parentIntentSignature": "AMAZON.KendraSearchIntent",
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found a FAQ question for you: ((x-amz-lex:kendra-search-response-question_answer-question-1)), and the answer is ((x-amz-lex:kendra-search-response-question_answer-answer-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found an excerpt from a helpful document: ((x-amz-lex:kendra-search-response-document-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I think the answer to your questions is ((x-amz-lex:kendra-search-response-answer-1))"
+            }
+          ]
+        },
+        "kendraConfiguration": {
+          "kendraIndex": "arn:aws:kendra:region:1234567890:index/0c8e32db",
+          "queryFilterString": "",
+          "role": "arn:aws:iam::1234567890:role/Role"
+        }
       }
     ],
     "voiceId": "0",
@@ -759,7 +783,7 @@
       "messages": [
         {
           "contentType": "PlainText",
-          "content": "Sorry, I could not understand. Goodbye."
+          "content": "Sorry, I could not understand. Please try again."
         }
       ]
     },
