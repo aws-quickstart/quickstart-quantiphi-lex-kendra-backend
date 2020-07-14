@@ -8,10 +8,13 @@ This integration of the COVID 19 Lex chatbot with Kendra is a multifunctional ch
 
 This Quick Start is available in all the supported regions like us-east-1 (N. Virginia), us-west-2 (Oregon) and eu-west-1 (Ireland).
 
-You can use the AWS CloudFormation templates included with the Quick Start to deploy COVID 19 Lex-Kendra chatbot in your AWS account in about 35 minutes.
-The Quick Start automates the following:
+You can use the AWS CloudFormation templates (templates/lex_bot_kendra_master.template) included with the Quick Start to deploy COVID 19 Lex-Kendra chatbot in your AWS account in about 35 minutes.
+
+This Quick Start automates the following:
 
 - Deploying the COVID 19 Amazon Lex chatbot and Kendra Index with COVID 19 data repository
 - Deploying an Amazon Lex chatbot and Kendra Index with custom intents and data repository
+
+![Process flow diagram](https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/raw/develop/Process%20Flow.jpg)
 
 The Process Flow diagram is present above.
