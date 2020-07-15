@@ -1,6 +1,6 @@
 project:
   name: quickstart-quantiphi-lex-kendra-backend
-  owner: sarvesh.virkud@quantiphi.com
+  owner: quickstart@amazon.com
   package_lambda: false
   lambda_zip_path: ./functions/packages/
 tests:
@@ -8,7 +8,7 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName:  #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: "" #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
     template: ./templates/lex_bot_kendra_master.template
@@ -18,7 +18,7 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName:  #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: qtphi-bucket2 #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
     template: ./templates/lex_bot_kendra_master.template
@@ -28,7 +28,7 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName:  #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: "" #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
     template: ./templates/lex_bot_kendra_master.template
