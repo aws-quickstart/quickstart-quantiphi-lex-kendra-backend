@@ -99,6 +99,7 @@ Parameters:
     AllowedPattern: ^.*.csv$
     Description: The file where FAQs are stored for the Kendra Index
     Type: String
+    Default: COVID_FAQ.csv
 
   LexBotJSONKey:
     AllowedPattern: ^.*.json$
