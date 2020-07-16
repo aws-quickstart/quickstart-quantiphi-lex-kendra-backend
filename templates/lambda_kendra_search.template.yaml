@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: A Cloudformation template to create the handler lambda function which will query the Kendra Index
+Description: A Cloudformation template to create the handler lambda function which will query the Kendra Index. (qs-1qu380l7d)
 
 Parameters:      
   QSS3KeyPrefix:

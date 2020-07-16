@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: A master template which launches a Kendra Index alongwith a Lex Bot showcasing the integration between the two services
+Description: A master template which creates a Lex Bot and integrate it with a Kendra Index with S3 bucket as a document respository. (qs-1qu380l7l)
 Metadata: 
   AWS::CloudFormation::Interface: 
     ParameterGroups:
@@ -282,9 +282,9 @@ Resources:
       SourceBucket: !Ref 'QSS3BucketName'
       Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
-        - "templates/lex_bot_resource.template"
-        - "templates/lambda_kendra_search.template"
-        - "templates/kendra_resource.template"
+        - "templates/lex_bot_resource.template.yaml"
+        - "templates/lambda_kendra_search.template.yaml"
+        - "templates/kendra_resource.template.yaml"
         - "functions/packages/lambda_layers/lambda_layers.zip"
         - "functions/packages/kendra_search_intent_handler_lambda/kendra_search_intent_handler_lambda.zip"
         - !Ref LexBotJSONKey
@@ -297,7 +297,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
@@ -316,7 +316,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_kendra_search.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_kendra_search.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
@@ -329,7 +329,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters: 

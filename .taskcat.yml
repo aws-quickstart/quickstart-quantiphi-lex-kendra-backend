@@ -13,7 +13,7 @@ tests:
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
       PureCloudAccountID: 123456123456
       ExternalID: 1234
-    template: ./templates/lex_bot_kendra_master.template
+    template: ./templates/lex_bot_kendra_master.template.yaml
     regions: 
     - eu-west-1
   quickstart-quantiphi-test-2:
@@ -25,7 +25,7 @@ tests:
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
       PureCloudAccountID: 123456123456
       ExternalID: 1234
-    template: ./templates/lex_bot_kendra_master.template
+    template: ./templates/lex_bot_kendra_master.template.yaml
     regions: 
     - us-west-2
   quickstart-quantiphi-test-3:
@@ -37,6 +37,6 @@ tests:
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
       PureCloudAccountID: 123456123456
       ExternalID: 1234
-    template: ./templates/lex_bot_kendra_master.template
+    template: ./templates/lex_bot_kendra_master.template.yaml
     regions: 
     - us-east-1

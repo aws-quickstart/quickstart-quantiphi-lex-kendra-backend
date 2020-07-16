@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex
+Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex. (qs-1qu380l87)
 
 Parameters:
 
