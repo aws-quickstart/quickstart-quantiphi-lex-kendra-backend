@@ -28,8 +28,7 @@ Please make sure you have the following pre-requisites, before launching the Clo
 ### Deployment steps
 
 1. Download [FAQ file](https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv) from the repository and upload it into the S3 bucket (mentioned in pre-requisites section above) which is used as document repository.
-2. Click the [Deploy](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=lex-kendra&templateURL=https://aws-quickstart.s3.amazonaws.com/quickstart-quantiphi-lex-kendra-backend/templates/lex_bot_kendra_master.template) to launch the CloudFormation template in your AWS Account.
-3. Click "Next".
+2. Click [Deploy](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=lex-kendra&templateURL=https://aws-quickstart.s3.amazonaws.com/quickstart-quantiphi-lex-kendra-backend/templates/lex_bot_kendra_master.template) to launch the CloudFormation template in your AWS Account. Click "Next".
 3. Provide S3 bucket name (from the pre-requisite section above) for parameter 'S3 bucket with documents', and click Next.
 4. On 'Configure stack options' screen, click Next.
 5. Review the details, provide IAM_CAPABILITIES by clicking the check boxes under 'Capabilities' section, and click 'Create stack'. It will take approximately 25 minutes to create the stack.

@@ -8,10 +8,10 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName: "" #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: $[taskcat_getval_QSS3BucketName] #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
-      PureCloudAccountID: 765628985471
+      PureCloudAccountID: 123456123456
       ExternalID: 1234
     template: ./templates/lex_bot_kendra_master.template
     regions: 
@@ -20,10 +20,10 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName: qtphi-bucket2 #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: $[taskcat_getval_QSS3BucketName] #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
-      PureCloudAccountID: 765628985471
+      PureCloudAccountID: 123456123456
       ExternalID: 1234
     template: ./templates/lex_bot_kendra_master.template
     regions: 
@@ -32,10 +32,10 @@ tests:
     parameters:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      KendraS3BucketName: "" #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+      KendraS3BucketName: $[taskcat_getval_QSS3BucketName] #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
       KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
       LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
-      PureCloudAccountID: 765628985471
+      PureCloudAccountID: 123456123456
       ExternalID: 1234
     template: ./templates/lex_bot_kendra_master.template
     regions: 
