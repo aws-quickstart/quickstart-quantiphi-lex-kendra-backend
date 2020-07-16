@@ -50,7 +50,7 @@ def read_json_file_from_s3(bucket_name, object_key):
     return json.loads(lex_json_obj.get()["Body"].read().decode('utf-8'))
 
 
-def create_lex_intents(fulfillment_lambda, intents, kendra_search_role_arn, kendra_index_id, account_id):
+def create_lex_intents(fulfillment_lambda, intents, kendra_search_role_arn, kendra_index_id, account_id, slot_type_version):
     """
     Creates Lex intents.
     :param fulfillment_lambda: ARN of fulfillment Lambda
@@ -58,14 +58,16 @@ def create_lex_intents(fulfillment_lambda, intents, kendra_search_role_arn, kend
     :param kendra_search_role_arn: ARN of role created for creating custom Lex bot
     :param kendra_index_id: Kendra Index ID
     :param account_id: AWS Account ID
+    :param slot_type_version: Map of Slot type versions.
     :return: List of intents (Name and Version)
     """
     intent_list = []
     for intent in intents:
-        intent_list.append({
-            'intentName': intent['name'],
-            'intentVersion': '$LATEST'
-        })
+        if 'slots' in intent:
+            for slot in intent['slots']:
+                if 'slotType' in slot and slot['slotType'] in slot_type_version:
+                    slot['slotTypeVersion'] = slot_type_version[slot['slotType']]
+
         if intent['name'].startswith('AMAZON.'):
             continue
         if 'parentIntentSignature' in intent and intent['parentIntentSignature'] == 'AMAZON.KendraSearchIntent':
@@ -79,7 +81,12 @@ def create_lex_intents(fulfillment_lambda, intents, kendra_search_role_arn, kend
             intent['checksum'] = intent_get_response['checksum']
         except lex_client.exceptions.NotFoundException:
             pass
-        lex_client.put_intent(**intent)
+        intent['createVersion'] = True
+        intent_response = lex_client.put_intent(**intent)
+        intent_list.append({
+            'intentName': intent['name'],
+            'intentVersion': intent_response['version']
+        })
         logger.info("Created/updated intent %s", str(intent['name']))
     return intent_list
 
@@ -88,8 +95,9 @@ def create_lex_slot_types(slot_types):
     """
     Creates Lex slot types.
     :param slot_types: List of Lex slot types.
-    :return: None
+    :return: Map of Slot type versions.
     """
+    slot_type_version = {}
     for slot_type in slot_types:
         slot_type.pop('version', None)
         try:
@@ -97,8 +105,11 @@ def create_lex_slot_types(slot_types):
             slot_type['checksum'] = slot_get_response['checksum']
         except lex_client.exceptions.NotFoundException:
             pass
-        lex_client.put_slot_type(**slot_type)
+        slot_type['createVersion'] = True
+        slot_type_response = lex_client.put_slot_type(**slot_type)
+        slot_type_version[slot_type['name']] = slot_type_response['version']
         logger.info("Created/updated slot type %s", str(slot_type['name']))
+    return slot_type_version
 
 
 def create_lex_bot(lex_bot, fulfillment_lambda, kendra_search_role_arn, kendra_index_id, account_id):
@@ -109,16 +120,18 @@ def create_lex_bot(lex_bot, fulfillment_lambda, kendra_search_role_arn, kendra_i
     :param kendra_search_role_arn: ARN of role created for creating custom Lex bot
     :param kendra_index_id: Kendra Index ID
     :param account_id: AWS Account ID
-    :return: Lex Bot Name
+    :return: Lex Bot Name & version
     """
     intent_list = []
+    slot_type_version = {}
     if 'slotTypes' in lex_bot:
-        create_lex_slot_types(lex_bot['slotTypes'])
+        slot_type_version = create_lex_slot_types(lex_bot['slotTypes'])
         del lex_bot['slotTypes']
     if 'intents' in lex_bot:
-        intent_list = create_lex_intents(fulfillment_lambda, lex_bot['intents'], kendra_search_role_arn, kendra_index_id, account_id)
+        intent_list = create_lex_intents(fulfillment_lambda, lex_bot['intents'], kendra_search_role_arn, kendra_index_id, account_id, slot_type_version)
     lex_bot['intents'] = intent_list
     lex_bot['processBehavior'] = 'BUILD'
+    lex_bot['createVersion'] = True
     lex_bot.pop('version', None)
     try:
         bot_get_response = lex_client.get_bot(name=lex_bot['name'], versionOrAlias='$LATEST')
@@ -127,7 +140,8 @@ def create_lex_bot(lex_bot, fulfillment_lambda, kendra_search_role_arn, kendra_i
         pass
     bot_response = lex_client.put_bot(**lex_bot)
     logger.info("Bot Name: %s", str(bot_response['name']))
-    return bot_response['name']
+
+    return bot_response['name'], bot_response['version']
 
 
 @helper.create
@@ -158,9 +172,10 @@ def create(event, _):
     lex_json = read_json_file_from_s3(event['ResourceProperties']['LexS3Bucket'],
                                       event['ResourceProperties']['LexFileKey'])
 
-    bot_name = create_lex_bot(lex_json['resource'],
+    bot_name, bot_version = create_lex_bot(lex_json['resource'],
                               event['ResourceProperties']['FulfillmentLambda'], event['ResourceProperties']['KendraSearchRole'], event['ResourceProperties']['KendraIndex'], event['ResourceProperties']['AccountID'])
     helper.Data['BotName'] = bot_name
+    helper.Data['BotVersion'] = bot_version
 
 
 def check_bot_status(bot_name):
@@ -197,8 +212,19 @@ def poll_create(event, _):
     """
     logger.info("Got create poll")
     bot_name = event['CrHelperData']['BotName']
+    bot_alias = {}
+    bot_alias['name'] = 'quickstart'
+    bot_alias['botVersion'] = event['CrHelperData']['BotVersion']
+    bot_alias['botName'] = bot_name
+
     if not check_bot_status(bot_name):
         return None
+    try:
+        bot_get_alias_response = lex_client.get_bot_alias(name='quickstart', botName = bot_name)
+        bot_alias['checksum'] = bot_get_alias_response['checksum']
+    except lex_client.exceptions.NotFoundException:
+        pass
+    lex_client.put_bot_alias(**bot_alias)
     return bot_name
 
 

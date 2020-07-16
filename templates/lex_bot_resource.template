@@ -23,9 +23,35 @@ Parameters:
     AllowedPattern: arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?
     Description: ARN of Kendra Search intent Lambda
     Type: String
-    
+  
+  PureCloudAccountID:
+    Description: The PureCloud's production account ID
+    Type: String
+    Default: 765628985471
+
+  ExternalID:
+    Description: The organization's ID
+    Type: String
 
 Resources: 
+  PureCloudIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${PureCloudAccountID}:root"
+          Action: sts:AssumeRole
+          Condition:
+            StringEquals:
+              sts:ExternalId: !Ref ExternalID
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonLexReadOnly"
+        - "arn:aws:iam::aws:policy/AmazonLexRunBotsOnly"
+
+
   LexBotIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -87,6 +113,19 @@ Resources:
           - "lex:GetBotAliases"
           - "lex:DeleteIntentVersion"
           - "lex:GetBuiltinIntents"
+          - "lex:GetBuiltinIntent"
+          - "lex:DeleteBotAlias"
+          - "lex:GetBots"
+          - "lex:GetSlotTypeVersions"
+          - "lex:CreateSlotTypeVersion"
+          - "lex:DeleteBotVersion"
+          - "lex:GetIntentVersions"
+          - "lex:GetIntents"
+          - "lex:GetBotVersions"
+          - "lex:CreateBotVersion"
+          - "lex:GetBotAlias"
+          - "lex:CreateIntentVersion"
+          - "lex:PutBotAlias"
           Resource:
           - "*"
         - Effect: Allow
@@ -153,9 +192,12 @@ Resources:
       AccountID: !Sub '${AWS::AccountId}'
 
 Outputs:
-  
+  PureCloudIAMRoleARN:
+    Description: ARN of IAM Role used for PureCloud Integration
+    Value: !GetAtt PureCloudIAMRole.Arn
+
   IAMRoleARN:
-    Description: ARN of IAM Role for used Lex Custom Resource Operations
+    Description: ARN of IAM Role used for Lex Custom Resource Operations
     Value: !GetAtt LexBotIAMRole.Arn
   
   LambdaFunctionARN:

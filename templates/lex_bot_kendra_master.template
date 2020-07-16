@@ -25,6 +25,12 @@ Metadata:
           - KendraDataSourceName
           - KendraFAQName
           - KendraFAQFileKey
+      - 
+        Label: 
+          default: "Pure Cloud configuration"
+        Parameters: 
+          - PureCloudAccountID
+          - ExternalID
       
     ParameterLabels: 
       QSS3BucketName:
@@ -47,6 +53,10 @@ Metadata:
         default: FAQ name for Kendra
       KendraFAQFileKey: 
         default: S3 key for FAQs
+      PureCloudAccountID:
+        default: PureCloud's Production Account ID
+      ExternalID:
+        default: Organization's ID
 
 Parameters:
   QSS3BucketName:
@@ -99,12 +109,22 @@ Parameters:
     AllowedPattern: ^.*.csv$
     Description: The file where FAQs are stored for the Kendra Index
     Type: String
+    Default: COVID_FAQ.csv
 
   LexBotJSONKey:
     AllowedPattern: ^.*.json$
     Description: JSON configuration of the Lex bot
     Type: String
     Default: assets/lex-bot-template/covid_bot_Export.json
+  
+  PureCloudAccountID:
+    Description: The PureCloud's production account ID
+    Type: String
+    Default: 765628985471
+
+  ExternalID:
+    Description: The organization's ID
+    Type: String
  
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
@@ -317,8 +337,14 @@ Resources:
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         LambdaFunctionARN: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
         LexBotJSONKey: !Ref LexBotJSONKey
+        PureCloudAccountID: !Ref PureCloudAccountID
+        ExternalID: !Ref ExternalID
 
 Outputs:
+  PureCloudIAMRoleARN:
+    Description: ARN of IAM Role used for PureCloud Integration
+    Value: !GetAtt LexBotStack.Outputs.PureCloudIAMRoleARN
+
   KendraIndexName:
     Description: Name of the Kendra Index
     Value: !Ref KendraIndexName
