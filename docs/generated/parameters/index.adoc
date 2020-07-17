@@ -1,1 +1,3 @@
-// placeholder
+
+=== Launch stack creation
+include::lex_bot_kendra_master.template.adoc[]

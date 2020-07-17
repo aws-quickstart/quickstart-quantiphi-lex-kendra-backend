@@ -9,10 +9,10 @@ Metadata:
       -
         Label:
           default: "AWS Quick Start configuration"
-          Parameters:
-            - QSS3BucketName
-            - QSS3BucketRegion
-            - QSS3KeyPrefix
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
       - 
         Label: 
           default: "Lex bot configuration"
