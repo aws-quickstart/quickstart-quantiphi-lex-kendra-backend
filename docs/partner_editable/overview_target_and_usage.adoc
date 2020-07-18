@@ -4,4 +4,4 @@
 
 This Quick Start reference deployment guide provides step-by-step instructions for deploying {partner-product-name} on the AWS Cloud.
 
-This Quick Start sets up the Lex chatbot with Kendra integration, which can be used by organizations to enhance the search and fulfillment capabilities of the Lex chatbot by providing users with the ability to query the enterprise data repository using Kendra.
+This Quick Start sets up Amazon Kendra index, data source with Amazon S3 bucket as the document repository, and integrates it with Amazon Lex ChatBot. It can be used by organizations to enhance the search and fulfillment capabilities of their Lex chatbot by providing users with the ability to query the enterprise data repository using Kendra.
