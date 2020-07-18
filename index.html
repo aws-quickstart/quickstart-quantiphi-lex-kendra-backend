@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Lex chatbot with Kendra integration on the AWS Cloud</title>
+<title>Amazon Lex chatbot with Kendra on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -771,7 +771,7 @@ table p {
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_lex_chatbot_with_kendra_integration_on_aws">Lex chatbot with Kendra integration on AWS</a></li>
+<li><a href="#_amazon_lex_chatbot_with_kendra_on_aws">Amazon Lex chatbot with Kendra on AWS</a></li>
 <li><a href="#_cost">Cost</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
@@ -805,7 +805,7 @@ table p {
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<h2 id="_lex_chatbot_with_kendra_integration_on_the_aws_cloud" class="discrete text-center">Lex chatbot with Kendra integration on the AWS Cloud</h2>
+<h2 id="_amazon_lex_chatbot_with_kendra_on_the_aws_cloud" class="discrete text-center">Amazon Lex chatbot with Kendra on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
@@ -815,7 +815,7 @@ table p {
 <div class="paragraph text-center">
 <p><strong>July, 2020</strong><br>
 <em>Sanchit Jain - Quantiphi</em><br>
-<em>Shivansh Singh - Partner SA,</em></p>
+<em>Shivansh Singh - Partner SA, AWS</em></p>
 </div>
 <div class="admonitionblock tip text-left">
 <table>
@@ -839,10 +839,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying Lex chatbot with Kendra integration on the AWS Cloud.</p>
+<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying Amazon Lex chatbot with Kendra on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start sets up the Lex chatbot with Kendra integration, which can be used by organizations to enhance the search and fulfillment capabilities of the Lex chatbot by providing users with the ability to query the enterprise data repository using Kendra.</p>
+<p>This Quick Start sets up Amazon Kendra index, data source with Amazon S3 bucket as the document repository, and integrates it with Amazon Lex ChatBot. It can be used by organizations to enhance the search and fulfillment capabilities of their Lex chatbot by providing users with the ability to query the enterprise data repository using Kendra.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -861,10 +861,10 @@ collaborated with AWS on the content of the Quick Start.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lex_chatbot_with_kendra_integration_on_aws">Lex chatbot with Kendra integration on AWS</h2>
+<h2 id="_amazon_lex_chatbot_with_kendra_on_aws">Amazon Lex chatbot with Kendra on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start creates a Lex chatbot, along with a Kendra index. The Kendra index uses an S3 data repository to create the Kendra data source linked to this index, along with an FAQ source. The Lex chatbot is connected to the Kendra index via a custom Lambda function, using the Lex Fallback Intent.</p>
+<p>This Quick Start creates an Amazon Lex chatbot, along with a Kendra index. The Kendra index uses an S3 bucket as a data repository to create the Kendra data source linked to the index, along with an FAQ source. The Lex chatbot is connected to the Kendra index via a custom Lambda function, using the Kendra Search Intent.</p>
 </div>
 </div>
 </div>
@@ -908,15 +908,13 @@ After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.co
 <h2 id="_architecture">Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Deploying this Quick Start for a new virtual private cloud (VPC) with
-<strong>default parameters</strong> builds the following <em>Lex chatbot with Kendra integration</em> environment in the
-AWS Cloud.</p>
+<p>Deploying this Quick Start with <strong>default parameters</strong> builds the following <em>Amazon Lex chatbot with Kendra</em> environment in the AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
-<a class="image" href="images/architecture_diagram.png"><img src="images/architecture_diagram.png" alt="Architecture" width="648" height="439"></a>
+<a class="image" href="images/architecture_diagram.jpg"><img src="images/architecture_diagram.png" alt="Architecture" width="648" height="439"></a>
 </div>
-<div class="title">Figure 1. Quick Start architecture for <em>Lex chatbot with Kendra integration</em> on AWS</div>
+<div class="title">Figure 1. Quick Start architecture for <em>Amazon Lex chatbot with Kendra</em> on AWS</div>
 </div>
 <div class="paragraph">
 <p>As shown in Figure 1, the Quick Start sets up the following:</p>
@@ -924,13 +922,13 @@ AWS Cloud.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>An Amazon Lex bot, with associated intents, and slot types.</p>
-</li>
-<li>
-<p>AWS Lambda function, used to query the Kendra index and return the appropriate response.</p>
+<p>An Amazon Lex bot, with associated intents.</p>
 </li>
 <li>
 <p>An Amazon Kendra Index and data source.</p>
+</li>
+<li>
+<p>AWS Lambda function, used to query the Kendra index and return the appropriate response.</p>
 </li>
 <li>
 <p>IAM roles for Lex bot, and Lambda function with necessary permissions to access AWS services and resources.</p>
@@ -1068,18 +1066,18 @@ Certain regions are available on an opt-in basis. Refer to the AWS Documentation
 <p>To deploy the stack, you need to provide an S3 bucket name which contains the documents that will be indexed by Kendra to provide answers to user&#8217;s question. This S3 bucket is your document repository for the Lex ChatBot.</p>
 </div>
 <div class="paragraph">
-<p>Please make sure you have this S3 bucket ready, before deploying the stack.</p>
+<p>Please make sure you have this S3 bucket ready with necessary documents, before deploying the stack.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_deployment_options">Deployment options</h4>
 <div class="paragraph">
-<p>This Quick Start provides one deployment option:</p>
+<p>This Quick Start provides following deployment option:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Deploy Lex chatbot with Kendra integration into an AWS Account (end-to-end deployment)</strong>. This option builds a new AWS environment consisting of the Lex ChatBot, Lambda functions, Amazon Kendra index, data source, FAQ and other infrastructure components.</p>
+<p><strong>Deploy Amazon Lex chatbot with Kendra into an AWS Account (end-to-end deployment)</strong>. This option builds a new AWS environment consisting of the Lex ChatBot, Lambda functions, Amazon Kendra index, data source, FAQ and other infrastructure components.</p>
 </li>
 </ul>
 </div>
@@ -1130,7 +1128,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy Lex chatbot with Kendra integration on AWS</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy Amazon Lex chatbot with Kendra on AWS</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1140,7 +1138,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="olist arabic">
 <ol class="arabic" start="2">
 <li>
-<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for Lex chatbot with Kendra integration will be built. The template is launched in the us-east-1 Region by default.</p>
+<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for Amazon Lex chatbot with Kendra will be built. The template is launched in the us-east-1 Region by default.</p>
 </li>
 </ol>
 </div>
@@ -1174,65 +1172,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <div class="sect2">
 <h3 id="_launch_stack_creation">Launch stack creation</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. AWS Quick Start configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Your Bucket Configured for Quickstart
-(<code>QSS3BucketName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 bucket created for your copy of Quick Start assets</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Region of Quickstart bucket
-(<code>QSS3BucketRegion</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 prefix where you want to sync you git Repo
-(<code>QSS3KeyPrefix</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-quantiphi-lex-kendra-backend/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 key name prefix used for your copy of Quick Start assets</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Lex bot configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key of JSON configuration of the Lex bot
-(<code>LexBotJSONKey</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>assets/lex-bot-template/covid_bot_Export.json</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JSON configuration of the Lex bot</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Kendra index configuration</caption>
+<caption class="title">Table 1. Kendra resource configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1285,7 +1225,30 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Pure Cloud configuration</caption>
+<caption class="title">Table 2. Lex bot configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key of JSON configuration of the Lex bot
+(<code>LexBotJSONKey</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>assets/lex-bot-template/covid_bot_Export.json</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON configuration of the Lex bot</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Genesys Pure Cloud configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1313,6 +1276,41 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. AWS Quick Start configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Your Bucket Configured for Quickstart
+(<code>QSS3BucketName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 bucket created for your copy of Quick Start assets</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Region of Quickstart bucket
+(<code>QSS3BucketRegion</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 prefix where you want to sync you git Repo
+(<code>QSS3KeyPrefix</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-quantiphi-lex-kendra-backend/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 key name prefix used for your copy of Quick Start assets</p></td>
+</tr>
+</tbody>
+</table>
 <div class="olist arabic">
 <ol class="arabic" start="5">
 <li>
@@ -1325,7 +1323,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <p>Choose <strong>Create stack</strong> to deploy the stack.</p>
 </li>
 <li>
-<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Lex chatbot with Kendra integration deployment is ready.</p>
+<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Amazon Lex chatbot with Kendra deployment is ready.</p>
 </li>
 <li>
 <p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in Figure 2, to view the resources that were created.</p>
@@ -1336,7 +1334,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <div class="content">
 <img src="images/cfn_outputs.png" alt="cfn_outputs" width="648" height="439">
 </div>
-<div class="title">Figure 2. Lex chatbot with Kendra integration outputs after successful deployment</div>
+<div class="title">Figure 2. Amazon Lex chatbot with Kendra outputs after successful deployment</div>
 </div>
 </div>
 </div>
@@ -1351,13 +1349,9 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 </li>
 <li>
 <p>Test the Lex bot intents by typing ‘Hi’. You should receive a response as <em>‘Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I&#8217;m not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?’</em></p>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Test the Kendra search capabilities and connection with Lex by typing <em>‘What preventive measures can I take?’</em>. You should receive a response as ‘On searching the Enterprise repository, I have found the following answer in the FAQs&#8212;&#8203;Wash your hands often, avoid close contact with people and cover your mouth and nose with a cloth face cover when around people, monitor your health, clean and disinfect frequently touched surfaces daily.’</p>
-</li>
-</ol>
-</div>
 </li>
 </ol>
 </div>
@@ -1367,7 +1361,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <h2 id="_other_useful_information">Other useful information</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can use custom UIs or 3rd party products as a frontend for your users to interact with, and use the Lex ChatBot deployed in this Quick Start as a backend which connects with Amazon Kendra to answer user questions.</p>
+<p>You can use custom UIs or 3rd party products as a frontend for your users to interact with, and use the Lex ChatBot deployed with this Quick Start as a backend which connects with Amazon Kendra to answer user questions.</p>
 </div>
 </div>
 </div>
@@ -1445,7 +1439,7 @@ and to share your customizations with others.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-18 00:18:05 UTC
+Last updated 2020-07-18 04:13:39 UTC
 </div>
 </div>
 </body>

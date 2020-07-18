@@ -6,21 +6,9 @@ Metadata:
 
   AWS::CloudFormation::Interface: 
     ParameterGroups:
-      -
-        Label:
-          default: "AWS Quick Start configuration"
-        Parameters:
-          - QSS3BucketName
-          - QSS3BucketRegion
-          - QSS3KeyPrefix
       - 
         Label: 
-          default: "Lex bot configuration"
-        Parameters: 
-          - LexBotJSONKey
-      - 
-        Label: 
-          default: "Kendra index configuration"
+          default: "Kendra resource configuration"
         Parameters: 
           - KendraIndexName
           - KendraIndexEdition
@@ -30,10 +18,22 @@ Metadata:
           - KendraFAQFileKey
       - 
         Label: 
-          default: "Pure Cloud configuration"
+          default: "Lex bot configuration"
+        Parameters: 
+          - LexBotJSONKey
+      - 
+        Label: 
+          default: "Genesys Pure Cloud configuration"
         Parameters: 
           - PureCloudAccountID
           - ExternalID
+      -
+        Label:
+          default: "AWS Quick Start configuration"
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
       
     ParameterLabels: 
       QSS3BucketName:
