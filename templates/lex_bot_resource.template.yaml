@@ -24,17 +24,16 @@ Parameters:
     Description: ARN of Kendra Search intent Lambda
     Type: String
   
-  PureCloudAccountID:
-    Description: The PureCloud's production account ID
+  AssumingAccountID:
+    Description: Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot
     Type: String
-    Default: 765628985471
 
   ExternalID:
     Description: The organization's ID
     Type: String
 
 Resources: 
-  PureCloudIAMRole:
+  AssumeIAMRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -42,7 +41,7 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            AWS: !Sub "arn:aws:iam::${PureCloudAccountID}:root"
+            AWS: !Sub "arn:aws:iam::${AssumingAccountID}:root"
           Action: sts:AssumeRole
           Condition:
             StringEquals:
@@ -192,9 +191,9 @@ Resources:
       AccountID: !Sub '${AWS::AccountId}'
 
 Outputs:
-  PureCloudIAMRoleARN:
-    Description: ARN of IAM Role used for PureCloud Integration
-    Value: !GetAtt PureCloudIAMRole.Arn
+  AssumeIAMRoleARN:
+    Description: ARN of IAM Role used for Cross Account Integration
+    Value: !GetAtt AssumeIAMRole.Arn
 
   IAMRoleARN:
     Description: ARN of IAM Role used for Lex Custom Resource Operations

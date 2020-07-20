@@ -25,7 +25,7 @@ Metadata:
         Label: 
           default: "Genesys Pure Cloud configuration"
         Parameters: 
-          - PureCloudAccountID
+          - AssumingAccountID
           - ExternalID
       -
         Label:
@@ -56,8 +56,8 @@ Metadata:
         default: FAQ name for Kendra
       KendraFAQFileKey: 
         default: S3 key for FAQs
-      PureCloudAccountID:
-        default: PureCloud's Production Account ID
+      AssumingAccountID:
+        default: Assuming Account ID
       ExternalID:
         default: Organization's ID
 
@@ -120,10 +120,9 @@ Parameters:
     Type: String
     Default: assets/lex-bot-template/covid_bot_Export.json
   
-  PureCloudAccountID:
-    Description: The PureCloud's production account ID
+  AssumingAccountID:
+    Description: Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot
     Type: String
-    Default: 765628985471
 
   ExternalID:
     Description: The organization's ID
@@ -340,13 +339,13 @@ Resources:
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         LambdaFunctionARN: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
         LexBotJSONKey: !Ref LexBotJSONKey
-        PureCloudAccountID: !Ref PureCloudAccountID
+        AssumingAccountID: !Ref AssumingAccountID
         ExternalID: !Ref ExternalID
 
 Outputs:
-  PureCloudIAMRoleARN:
-    Description: ARN of IAM Role used for PureCloud Integration
-    Value: !GetAtt LexBotStack.Outputs.PureCloudIAMRoleARN
+  AssumeIAMRoleARN:
+    Description: ARN of IAM Role used for Cross Account Integration
+    Value: !GetAtt LexBotStack.Outputs.AssumeIAMRoleARN
 
   KendraIndexName:
     Description: Name of the Kendra Index

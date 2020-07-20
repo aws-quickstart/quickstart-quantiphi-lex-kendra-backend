@@ -19,8 +19,8 @@
 .Genesys Pure Cloud configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|PureCloud's Production Account ID
-(`PureCloudAccountID`)|`765628985471`|The PureCloud's production account ID|Organization's ID
+|Parameter label (name) |Default Value|Description|Assuming Account ID
+(`AssumingAccountID`)|`**__Requires Input__**`|Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot|Organization's ID
 (`ExternalID`)|`**__Requires Input__**`|The organization's ID
 |===
 .AWS Quick Start configuration
