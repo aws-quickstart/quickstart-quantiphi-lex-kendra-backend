@@ -16,7 +16,7 @@
 |Parameter label (name) |Default Value|Description|S3 key of JSON configuration of the Lex bot
 (`LexBotJSONKey`)|`assets/lex-bot-template/covid_bot_Export.json`|JSON configuration of the Lex bot
 |===
-.Genesys Pure Cloud configuration
+.Cross account role configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default Value|Description|Assuming Account ID

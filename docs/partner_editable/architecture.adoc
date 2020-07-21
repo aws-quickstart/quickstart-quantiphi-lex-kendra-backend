@@ -4,7 +4,7 @@ Deploying this Quick Start with *default parameters* builds the following _{part
 [#architecture1]
 .Quick Start architecture for _{partner-product-name}_ on AWS
 [link=images/architecture_diagram.jpg]
-image::../images/architecture_diagram.png[Architecture,width=648,height=439]
+image::../images/architecture_diagram.jpg[Architecture,width=648,height=439]
 
 As shown in Figure 1, the Quick Start sets up the following:
 

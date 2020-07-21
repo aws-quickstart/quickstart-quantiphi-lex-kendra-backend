@@ -23,7 +23,7 @@ Metadata:
           - LexBotJSONKey
       - 
         Label: 
-          default: "Genesys Pure Cloud configuration"
+          default: "Cross account role configuration"
         Parameters: 
           - AssumingAccountID
           - ExternalID
