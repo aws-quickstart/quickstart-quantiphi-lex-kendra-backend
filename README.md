@@ -1,29 +1,38 @@
 # quickstart-lex-kendra
-## COVID 19 Lex-Kendra Chatbot on AWS
+## Amazon Lex Chatbot with Amazon Kendra on AWS
 
-This Quick Start deploys an Amazon Lex chatbot with Amazon Kendra search capabilities to answer user queries regarding the recent pandemic on the Amazon Web Services (AWS) Cloud in about 35 minutes.
-This Quick Start is for users who want to build and test a proof of concept or to create a production-ready solution with a deployment of a Amazon Lex chatbot linked to a Kendra index, datasource and FAQs.
+### Overview
+This Quick Start reference deployment guide provides step-by-step instructions for deploying Amazon Lex chatbot with Kendra on the AWS Cloud.
 
-This integration of the COVID 19 Lex chatbot with Kendra is a multifunctional chatbot, that can answer user queries based on pre-configured intents as well as query an S3 data repository containing the latest research using Amazon Kendra search capabilities.
+This Quick Start sets up Amazon Kendra index, data source with Amazon S3 bucket as the document repository, and integrates it with Amazon Lex ChatBot. It can be used by organizations to enhance the search and fulfillment capabilities of their Lex chatbot by providing users with the ability to query the enterprise data repository using Kendra.
 
-This Quick Start is available in all the supported regions like us-east-1 (N. Virginia), us-west-2 (Oregon) and eu-west-1 (Ireland).
+This Quick Start creates an Amazon Lex chatbot, along with a Kendra index. The Kendra index uses an S3 bucket as a data repository to create the Kendra data source linked to the index, along with an FAQ source. The Lex chatbot is connected to the Kendra index via the Kendra Search Intent.
 
-You can use the AWS CloudFormation templates (templates/lex_bot_kendra_master.template.yaml) included with the Quick Start to deploy COVID 19 Lex-Kendra chatbot in your AWS account in about 35 minutes.
+This Quick Start is available in all the AWS regions where the following services are available:
+- Amazon Lex
+- Amazon Kendra
+- Amazon S3
+- AWS Lambda
 
-This Quick Start automates the following:
+### Architecture
 
-- Deploying the COVID 19 Amazon Lex chatbot and Kendra Index with COVID 19 data repository
-- Deploying an Amazon Lex chatbot and Kendra Index with custom intents and data repository
+Deploying this Quick Start with default parameters builds the following Amazon Lex chatbot with Kendra environment in the AWS Cloud. 
 
-![Process flow diagram](https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/raw/develop/Process%20Flow.jpg)
+It also creates a sample Lex chatbot with Covid-19 sample documents in S3 bucket, which are utilized to answer user questions.
 
-The Process Flow diagram is present above.
+![Process flow diagram](./docs/images/architecture_diagram.jpg)
+
+As shown in Figure 1, the Quick Start sets up the following:
+- An Amazon Lex bot, with associated intents.
+- An Amazon Kendra Index and data source.
+- An AWS Lambda function,to enrich and compose responses to user from Lex chatbot.
+- IAM roles for Lex bot, and Lambda function with necessary permissions to access AWS services and resources.
 
 ### Pre-requisites
 Please make sure you have the following pre-requisites, before launching the CloudFormation templates to deploy the Quick Start.
 
 1. An AWS Account.
-2. An S3 bucket, which contains the documents related to COVID-19 that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra.
+2. An S3 bucket, which contains the documents related to Covid-19 that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra, for sample Lex chatbot.
 
 ### Deployment steps
 
