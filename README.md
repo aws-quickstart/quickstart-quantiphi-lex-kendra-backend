@@ -32,7 +32,7 @@ As shown in Figure 1, the Quick Start sets up the following:
 Please make sure you have the following pre-requisites, before launching the CloudFormation templates to deploy the Quick Start.
 
 1. An AWS Account.
-2. An S3 bucket, which contains the documents related to Covid-19 that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra, for sample Lex chatbot.
+2. An S3 bucket, which contains the documents related to Covid-19 that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra, for sample Lex chatbot. You can bring your own documents or, use the sample documents in Quantiphi's S3 bucket s3://quickstart-quantiphi-lex-kendra/ .
 
 ### Deployment steps
 
