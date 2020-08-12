@@ -1,0 +1,1 @@
+- This deployment includes Amazon Lex and Amazon Kendra, which aren't currently supported in all AWS Regions. For a current list of supported Regions for Amazon Lex and Amazon Kendra, see the https://docs.aws.amazon.com/general/latest/gr/aws-service-information.html[service endpoints and quotas^] page in the AWS documentation.

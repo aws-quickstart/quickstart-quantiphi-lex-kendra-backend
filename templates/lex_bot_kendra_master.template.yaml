@@ -1,23 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: A master template which launches a Kendra Index alongwith a Lex Bot showcasing the integration between the two services
-Metadata: 
+Description: A master template which creates a Lex Bot and integrate it with a Kendra Index with S3 bucket as a document respository. (qs-1qu380l7l)
+Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch stack creation"
+
   AWS::CloudFormation::Interface: 
     ParameterGroups:
-      -
-        Label:
-          default: "AWS Quick Start configuration"
-          Parameters:
-            - QSS3BucketName
-            - QSS3BucketRegion
-            - QSS3KeyPrefix
       - 
         Label: 
-          default: "Lex bot configuration"
-        Parameters: 
-          - LexBotJSONKey
-      - 
-        Label: 
-          default: "Kendra index configuration"
+          default: "Kendra resource configuration"
         Parameters: 
           - KendraIndexName
           - KendraIndexEdition
@@ -27,10 +18,22 @@ Metadata:
           - KendraFAQFileKey
       - 
         Label: 
-          default: "Pure Cloud configuration"
+          default: "Lex bot configuration"
         Parameters: 
-          - PureCloudAccountID
+          - LexBotJSONKey
+      - 
+        Label: 
+          default: "Cross account role configuration"
+        Parameters: 
+          - AssumingAccountID
           - ExternalID
+      -
+        Label:
+          default: "AWS Quick Start configuration"
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
       
     ParameterLabels: 
       QSS3BucketName:
@@ -53,8 +56,8 @@ Metadata:
         default: FAQ name for Kendra
       KendraFAQFileKey: 
         default: S3 key for FAQs
-      PureCloudAccountID:
-        default: PureCloud's Production Account ID
+      AssumingAccountID:
+        default: Assuming Account ID
       ExternalID:
         default: Organization's ID
 
@@ -117,10 +120,9 @@ Parameters:
     Type: String
     Default: assets/lex-bot-template/covid_bot_Export.json
   
-  PureCloudAccountID:
-    Description: The PureCloud's production account ID
+  AssumingAccountID:
+    Description: Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot
     Type: String
-    Default: 765628985471
 
   ExternalID:
     Description: The organization's ID
@@ -282,9 +284,9 @@ Resources:
       SourceBucket: !Ref 'QSS3BucketName'
       Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
-        - "templates/lex_bot_resource.template"
-        - "templates/lambda_kendra_search.template"
-        - "templates/kendra_resource.template"
+        - "templates/lex_bot_resource.template.yaml"
+        - "templates/lambda_kendra_search.template.yaml"
+        - "templates/kendra_resource.template.yaml"
         - "functions/packages/lambda_layers/lambda_layers.zip"
         - "functions/packages/kendra_search_intent_handler_lambda/kendra_search_intent_handler_lambda.zip"
         - !Ref LexBotJSONKey
@@ -297,7 +299,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/kendra_resource.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
@@ -316,7 +318,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_kendra_search.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lambda_kendra_search.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters:
@@ -329,7 +331,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/lex_bot_resource.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref RegionalArtifactBucket]
       Parameters: 
@@ -337,13 +339,13 @@ Resources:
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         LambdaFunctionARN: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
         LexBotJSONKey: !Ref LexBotJSONKey
-        PureCloudAccountID: !Ref PureCloudAccountID
+        AssumingAccountID: !Ref AssumingAccountID
         ExternalID: !Ref ExternalID
 
 Outputs:
-  PureCloudIAMRoleARN:
-    Description: ARN of IAM Role used for PureCloud Integration
-    Value: !GetAtt LexBotStack.Outputs.PureCloudIAMRoleARN
+  AssumeIAMRoleARN:
+    Description: ARN of IAM Role used for Cross Account Integration
+    Value: !GetAtt LexBotStack.Outputs.AssumeIAMRoleARN
 
   KendraIndexName:
     Description: Name of the Kendra Index

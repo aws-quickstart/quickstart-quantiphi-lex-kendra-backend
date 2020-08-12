@@ -1,0 +1,13 @@
+// Replace the <n> in each row to specify the number of resources used in this deployment. Remove the rows for resources that aren’t used.
+|===
+|Resource |This deployment uses
+
+// Space needed to maintain table headers
+|AWS Identity and Access Management (IAM) roles |4
+|AWS Lambda |4
+|Amazon S3 bucket |2
+|Amazon Lex Chatbot |1
+|Amazon Kendra Index |1
+|Kendra Data source |1
+|Kendra FAQ |1
+|===
