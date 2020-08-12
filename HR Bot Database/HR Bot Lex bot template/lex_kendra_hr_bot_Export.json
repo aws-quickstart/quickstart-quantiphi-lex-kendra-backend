@@ -1,0 +1,261 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0",
+    "importType": "LEX",
+    "importFormat": "JSON"
+  },
+  "resource": {
+    "name": "lex_kendra_hr_bot",
+    "version": "2",
+    "intents": [
+      {
+        "name": "job_available",
+        "version": "7",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "what job profiles are available",
+          "jobs available",
+          "hiring for jobs",
+          "which profiles is the company looking to hire for",
+          "Which job profiles are available right now",
+          "apply for job",
+          "job openings",
+          "Does my company have any job openings",
+          "does the company have any job openings right now"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Yes, there are multiple job openings for Developers, Engineers and Analysts. Kindly refer the careers section for more details."
+            }
+          ]
+        }
+      },
+      {
+        "name": "thanks_welcome",
+        "version": "8",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Thanks",
+          "thanks",
+          "Thank you",
+          "thank you",
+          "this is helpful"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Welcome. Glad to be of help!"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Happy to help."
+            }
+          ]
+        }
+      },
+      {
+        "name": "security_policies",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "what security policies are enforced by the company",
+          "security policy",
+          "security policies",
+          "What are the security policies implemented"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "There are various security policies implemented as per Information Security and Data Protection laws. Kindly mention the policy you would like to know more about."
+            }
+          ]
+        }
+      },
+      {
+        "name": "org_initiatives",
+        "version": "5",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "What are the organizational initiatives in the company",
+          "What are the organizational initiatives in the my company",
+          "Can you tell me about the Organizational Initiatives",
+          "Organizational Initiatives"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "There are various organizational initiatives such as Organizational Council and Self-development. For more details, kindly mention the specific initiative of interest."
+            }
+          ]
+        }
+      },
+      {
+        "name": "sick_earned_leaves",
+        "version": "7",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "paid leaves",
+          "unpaid leaves",
+          "what are the number of paid leaves",
+          "How many paid leaves are given"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Paid Leaves are 15 working days credited on pro-rata basis, from date of joining. Unpaid leaves are 6 working days credited on pro-rata basis, from date of joining."
+            }
+          ]
+        }
+      },
+      {
+        "name": "greetings_one",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "hi",
+          "hello",
+          "hey there",
+          "good morning",
+          "good evening",
+          "hey",
+          "okay",
+          "ok"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Hello! What can I help you with today?"
+            }
+          ]
+        }
+      },
+      {
+        "name": "salary_details",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "salary details",
+          "salary",
+          "compensation",
+          "what is the salary of employees",
+          "employee salary"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Compensation details are confidential in nature. Kindly reach out to your department HR for further queries."
+            }
+          ]
+        }
+      },
+      {
+        "name": "about_my_company_lex",
+        "version": "2",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Can you tell me about the company"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "We are an emerging AI/ML Company focused on value creation through inspired analytics"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Kendra_Search_Intent",
+        "version": "2",
+        "fulfillmentActivity": {
+          "codeHook": {
+            "uri": "arn:aws:lambda:region:1234567890:function:lambda",
+            "messageVersion": "1.0"
+          },
+          "type": "CodeHook"
+        },
+        "sampleUtterances": [],
+        "slots": [],
+        "parentIntentSignature": "AMAZON.KendraSearchIntent",
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found a FAQ question for you: ((x-amz-lex:kendra-search-response-question_answer-question-1)), and the answer is ((x-amz-lex:kendra-search-response-question_answer-answer-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found an excerpt from a helpful document: ((x-amz-lex:kendra-search-response-document-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I think the answer to your questions is ((x-amz-lex:kendra-search-response-answer-1))"
+            }
+          ]
+        },
+        "kendraConfiguration": {
+          "kendraIndex": "arn:aws:kendra:region:1234567890:index/0c8e32db",
+          "queryFilterString": "",
+          "role": "arn:aws:iam::1234567890:role/Role"
+        }
+      }
+    ],
+    "voiceId": "0",
+    "childDirected": false,
+    "locale": "en-US",
+    "idleSessionTTLInSeconds": 300,
+    "abortStatement": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "Sorry, I am unable to answer you query. Kindly contact your HRBP for further clarifications. Thank you."
+        }
+      ]
+    },
+    "detectSentiment": true
+  }
+}
