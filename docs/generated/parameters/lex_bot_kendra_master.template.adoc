@@ -2,31 +2,31 @@
 .Kendra resource configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Kendra Index Name
-(`KendraIndexName`)|`Lex-Kendra-Covid-Bot-Index`|The name of the Kendra Index|Kendra Index Edition
+|Parameter label (name) |Default value|Description|Kendra Index Name
+(`KendraIndexName`)|`Lex-Kendra-Bot-Index`|The name of the Kendra Index|Kendra Index Edition
 (`KendraIndexEdition`)|`DEVELOPER_EDITION`|Kendra Index Edition (DEVELOPER_EDITION or ENTERPRISE_EDITION)|S3 bucket with documents
-(`KendraS3BucketName`)|`**__Requires Input__**`|The name of the S3 bucket which has the Kendra docs for syncing|Data source name for Kendra Index
-(`KendraDataSourceName`)|`lex-kendra-covid-bot-data-source`|The name of data source for the Kendra Index|FAQ name for Kendra
-(`KendraFAQName`)|`lex-kendra-covid-bot-faqs`|The name of FAQs for the Kendra Index|S3 key for FAQs
+(`KendraS3BucketName`)|`**__Requires input__**`|The name of the S3 bucket which has the Kendra docs for syncing|Data source name for Kendra Index
+(`KendraDataSourceName`)|`lex-kendra-bot-data-source`|The name of data source for the Kendra Index|FAQ name for Kendra
+(`KendraFAQName`)|`lex-kendra-bot-faqs`|The name of FAQs for the Kendra Index|S3 key for FAQs
 (`KendraFAQFileKey`)|`COVID_FAQ.csv`|The file where FAQs are stored for the Kendra Index
 |===
 .Lex bot configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|S3 key of JSON configuration of the Lex bot
+|Parameter label (name) |Default value|Description|S3 key of JSON configuration of the Lex bot
 (`LexBotJSONKey`)|`assets/lex-bot-template/covid_bot_Export.json`|JSON configuration of the Lex bot
 |===
 .Cross account role configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Assuming Account ID
-(`AssumingAccountID`)|`**__Requires Input__**`|Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot|Organization's ID
-(`ExternalID`)|`**__Requires Input__**`|The organization's ID
+|Parameter label (name) |Default value|Description|Assuming Account ID
+(`AssumingAccountID`)|`**__Requires input__**`|Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot|Organization's ID
+(`ExternalID`)|`**__Requires input__**`|The organization's ID
 |===
 .AWS Quick Start configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default Value|Description|Your Bucket Configured for Quickstart
+|Parameter label (name) |Default value|Description|Your Bucket Configured for Quickstart
 (`QSS3BucketName`)|`aws-quickstart`|The S3 bucket created for your copy of Quick Start assets|Region of Quickstart bucket
 (`QSS3BucketRegion`)|`us-east-1`|The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.|S3 prefix where you want to sync you git Repo
 (`QSS3KeyPrefix`)|`quickstart-quantiphi-lex-kendra-backend/`|The S3 key name prefix used for your copy of Quick Start assets
