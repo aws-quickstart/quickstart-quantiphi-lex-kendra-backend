@@ -18,8 +18,6 @@ This Quick Start is available in all the AWS regions where the following service
 
 Deploying this Quick Start with default parameters builds the following Amazon Lex chatbot with Kendra environment in the AWS Cloud. 
 
-It also creates a sample Lex chatbot with Covid-19 sample documents in S3 bucket, which are utilized to answer user questions.
-
 ![Process flow diagram](./docs/images/architecture_diagram.jpg)
 
 As shown in Figure 1, the Quick Start sets up the following:
@@ -32,7 +30,7 @@ As shown in Figure 1, the Quick Start sets up the following:
 Please make sure you have the following pre-requisites, before launching the CloudFormation templates to deploy the Quick Start.
 
 1. An AWS Account.
-2. An S3 bucket, which contains the documents related to Covid-19 that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra, for sample Lex chatbot. You can bring your own documents or, use the sample documents in Quantiphi's S3 bucket s3://quickstart-quantiphi-lex-kendra/ .
+2. An S3 bucket, which contains the sample documents that are used by Kendra to index and query. This S3 bucket is the document repository which will be used as a data source by Kendra, for sample Lex chatbot. You can bring your own documents or, use the sample documents in Quantiphi's S3 bucket s3://quickstart-quantiphi-lex-kendra/ .
 
 ### Deployment steps
 
@@ -41,4 +39,4 @@ Please make sure you have the following pre-requisites, before launching the Clo
 3. Provide S3 bucket name (from the pre-requisite section above) for parameter 'S3 bucket with documents', and click Next.
 4. On 'Configure stack options' screen, click Next.
 5. Review the details, provide IAM_CAPABILITIES by clicking the check boxes under 'Capabilities' section, and click 'Create stack'. It will take approximately 25 minutes to create the stack.
-5. Once the stack creation is complete, go to Amazon Lex console, find the bot named 'covid_nineteen_bot' and click 'Test Chatbot' to start the conversation.
+5. Once the stack creation is complete, go to Amazon Lex console, find the bot named 'self_service_lex_bot' and click 'Test Chatbot' to start the conversation.

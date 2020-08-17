@@ -5,7 +5,7 @@
     "importFormat": "JSON"
   },
   "resource": {
-    "name": "covid_nineteen_bot",
+    "name": "self_service_lex_bot",
     "version": "2",
     "intents": [
       {

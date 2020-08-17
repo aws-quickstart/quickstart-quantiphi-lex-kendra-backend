@@ -1,7 +1,7 @@
 :quickstart-project-name: quickstart-quantiphi-lex-kendra-backend
 :partner-product-name: Amazon Lex chatbot with Kendra
 :partner-company-name: Quantiphi
-:doc-month: July
+:doc-month: August
 :doc-year: 2020
 :partner-contributors: Sanchit Jain - {partner-company-name}
 :quickstart-contributors: Shivansh Singh - Partner SA, AWS

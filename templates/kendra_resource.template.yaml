@@ -16,7 +16,7 @@ Parameters:
   KendraIndexName:
     Description: The name of the Kendra Index
     Type: String
-    Default: Lex-Kendra-Covid-Bot-Index
+    Default: Lex-Kendra-Bot-Index
 
   KendraIndexEdition:
     Description: Kendra Index Edition (DEVELOPER_EDITION or ENTERPRISE_EDITION)
@@ -29,12 +29,12 @@ Parameters:
   KendraDataSourceName:
     Description: The name of sata source for the Kendra Index
     Type: String
-    Default: lex-kendra-covid-bot-data-source
+    Default: lex-kendra-bot-data-source
 
   KendraFAQName:
     Description: The name of FAQs for the Kendra Index
     Type: String
-    Default: lex-kendra-covid-bot-faqs
+    Default: lex-kendra-bot-faqs
 
   KendraFAQFileKey:
     AllowedPattern: ^.*.csv$
