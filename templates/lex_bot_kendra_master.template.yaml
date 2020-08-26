@@ -148,6 +148,25 @@ Resources:
           Action:
           - sts:AssumeRole
       Path: "/"
+      Policies:
+        - PolicyName: lambda-copier
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:PutObject"
+                  - "s3:ListObject"
+                Resource:
+                  - !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - !Ref RegionalArtifactBucket
+                  - !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - !Ref RegionalArtifactBucket
+                      - '/*'
 
   LambdaFunctionIAMPolicy:
     Type: AWS::IAM::Policy
