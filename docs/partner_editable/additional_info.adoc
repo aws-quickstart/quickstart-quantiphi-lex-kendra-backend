@@ -4,7 +4,7 @@
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
-To test the deployment with sample documents, perform these step:
+To test the deployment with a sample document, perform these step:
 
 . Download the https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv[FAQ file^] from the Git repository, and upload it to your S3 bucket.
 . Launch the https://fwd.aws/Q6DVB[CloudFormation^] template in your AWS account, and choose *Next*.
@@ -19,4 +19,4 @@ To test the deployment with sample documents, perform these step:
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-You can use custom UIs or 3rd party products as a frontend for your users to interact with, and use the Lex ChatBot deployed with this Quick Start as a backend which connects with Amazon Kendra to answer user questions.
+You can use a custom user interface or third-party product as a front end for users to interact with and submit questions. As a back end, use the Amazon Lex chatbot that is deployed with this Quick Start to connect with Amazon Kendra to answer user questions.

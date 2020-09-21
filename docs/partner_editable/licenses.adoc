@@ -1,3 +1,3 @@
 // Include details about the license and how they can sign up. If no license is required, clarify that. 
 
-This Quick Start does not require a license to deploy Lex Chatbot with Kendra.
+This Quick Start does not require a license to deploy Amazon Lex chatbot with Amazon Kendra.
