@@ -8,7 +8,7 @@ To test the deployment with sample documents, perform these step:
 
 . Download the https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv[FAQ file^] from the Git repository, and upload it to your S3 bucket.
 . Launch the https://fwd.aws/Q6DVB[CloudFormation^] template in your AWS account, and choose *Next*.
-. Provide the S3 bucket name for the _S3 bucket with documents_ parameter, and choose *Next*.
+. Provide the S3 bucket name for the 'S3 bucket with documents' parameter, and choose *Next*.
 . On the *Configure stack options* page, choose *Next*.
 . Review the details, provide IAM_CAPABILITIES by selecting the check boxes under the *Capabilities* section, and choose *Create stack*. Creating the stack takes approximately 25 minutes.
 . After the stack is created, go to the Amazon Lex console, find the bot named 'self_service_lex_bot', and choose *Test Chatbot* to start the conversation. 
