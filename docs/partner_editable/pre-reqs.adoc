@@ -2,6 +2,4 @@
 
 ==== Prepare for the deployment
 
-To deploy the stack, you need to provide an S3 bucket name which contains the documents that will be indexed by Kendra to provide answers to user's question. This S3 bucket is your document repository for the Lex ChatBot.
-
-Please make sure you have this S3 bucket ready with necessary documents, before deploying the stack.
+Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot.
