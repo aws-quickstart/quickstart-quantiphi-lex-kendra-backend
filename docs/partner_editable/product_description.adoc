@@ -2,4 +2,8 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-This Quick Start creates an Amazon Lex chatbot, along with a Kendra index. The Kendra index uses an S3 bucket as a data repository to create the Kendra data source linked to the index, along with an FAQ source. The Lex chatbot is connected to the Kendra index via the Kendra Search Intent.
+This Quick Start lets third-party products integrate with Amazon Lex and Amazon Kendra to provide answers to user questions that originate from a document search interface.
+
+This Quick Start creates an Amazon Lex chatbot with an Amazon Kendra index. The index, along with an FAQ source, is linked to an S3 bucket data repository. The Amazon Lex chatbot is connected to the Amazon Kendra index via the Amazon Kendra search intent.  
+
+
