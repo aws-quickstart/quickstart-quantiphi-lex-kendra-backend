@@ -1,16 +1,17 @@
-Deploying this Quick Start with *default parameters* builds the following _{partner-product-name}_ environment in the AWS Cloud.
+Deploying this Quick Start with default parameters builds the following {partner-product-name} environment in the AWS Cloud.
 
 // Replace this example diagram with your own. Send us your source PowerPoint file. Be sure to follow our guidelines here : http://(we should include these points on our contributors giude)
 [#architecture1]
-.Quick Start architecture for _{partner-product-name}_ on AWS
-[link=images/architecture_diagram.jpg]
-image::../images/architecture_diagram.jpg[Architecture,width=648,height=439]
+.Quick Start architecture for {partner-product-name} on AWS
+[link=images/quantiphi-architecture-diagram.png]
+image::../images/quantiphi-architecture-diagram.png[Architecture,width=648,height=439]
 
 As shown in Figure 1, the Quick Start sets up the following:
 
-* An Amazon Lex bot, with associated intents.
-* An Amazon Kendra Index and data source.
-* AWS Lambda function, used to query the Kendra index and return the appropriate response.
-* IAM roles for Lex bot, and Lambda function with necessary permissions to access AWS services and resources.
+* An Amazon Lex chatbot with associated intents for sending search queries to Amazon Kendra.
+* An Amazon Kendra index for providing search results. 
+* Amazon Simple Storage Service (Amazon S3) bucket used as the data source.
+* An AWS Lambda function used to query the Amazon Kendra index and return the appropriate response.
+* AWS Identity and Access Management (IAM) roles for the Amazon Lex chatbot, and a Lambda function with the necessary permissions to access AWS services and resources.
 
 
