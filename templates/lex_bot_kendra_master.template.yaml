@@ -37,27 +37,27 @@ Metadata:
       
     ParameterLabels: 
       QSS3BucketName:
-        default: Your Bucket Configured for Quickstart
+        default: Your configured S3 bucket for the Quick Start
       QSS3BucketRegion:
-        default: Region of Quickstart bucket
+        default: Region of Quick Start bucket
       QSS3KeyPrefix:
-        default: S3 prefix where you want to sync you git Repo
+        default: S3 prefix where you want to sync the Git repo
       LexBotJSONKey:
         default: S3 key of JSON configuration of the Lex bot
       KendraS3BucketName: 
         default: S3 bucket with documents
       KendraIndexName: 
-        default: Kendra Index Name
+        default: Kendra index name
       KendraIndexEdition: 
-        default: Kendra Index Edition
+        default: Kendra index edition
       KendraDataSourceName: 
-        default: Data source name for Kendra Index
+        default: Data source name for Kendra index
       KendraFAQName: 
         default: FAQ name for Kendra
       KendraFAQFileKey: 
         default: S3 key for FAQs
       AssumingAccountID:
-        default: Assuming Account ID
+        default: Assuming account ID
       ExternalID:
         default: Organization's ID
 
@@ -65,7 +65,7 @@ Parameters:
   QSS3BucketName:
     Type: String
     Description: >-
-      The S3 bucket created for your copy of Quick Start assets
+      The S3 bucket created for your copy of Quick Start assets.
     Default: aws-quickstart
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
   
@@ -76,22 +76,22 @@ Parameters:
   
   QSS3KeyPrefix:
     Type: String
-    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Description: The S3 key name prefix used for your copy of Quick Start assets.
     Default: quickstart-quantiphi-lex-kendra-backend/
     AllowedPattern: ^[0-9a-zA-Z-/]*$
   
   KendraS3BucketName:
     AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
-    Description: The name of the S3 bucket which has the Kendra docs for syncing
+    Description: The name of the S3 bucket the contains the Kendra docs for syncing.
     Type: String
 
   KendraIndexName:
-    Description: The name of the Kendra Index
+    Description: The name of the Kendra index.
     Type: String
     Default: Lex-Kendra-Bot-Index
 
   KendraIndexEdition:
-    Description: Kendra Index Edition (DEVELOPER_EDITION or ENTERPRISE_EDITION)
+    Description: Kendra index edition (DEVELOPER_EDITION or ENTERPRISE_EDITION).
     Type: String
     AllowedValues: 
       - DEVELOPER_EDITION
@@ -99,33 +99,33 @@ Parameters:
     Default: DEVELOPER_EDITION
 
   KendraDataSourceName:
-    Description: The name of data source for the Kendra Index
+    Description: The name of data source for the Kendra index.
     Type: String
     Default: lex-kendra-bot-data-source
 
   KendraFAQName:
-    Description: The name of FAQs for the Kendra Index
+    Description: The name of FAQs for the Kendra index.
     Type: String
     Default: lex-kendra-bot-faqs
 
   KendraFAQFileKey:
     AllowedPattern: ^.*.csv$
-    Description: The file where FAQs are stored for the Kendra Index
+    Description: The file where FAQs are stored for the Kendra index.
     Type: String
     Default: COVID_FAQ.csv
 
   LexBotJSONKey:
     AllowedPattern: ^.*.json$
-    Description: JSON configuration of the Lex bot
+    Description: JSON configuration of the Lex bot.
     Type: String
     Default: assets/lex-bot-template/covid_bot_Export.json
   
   AssumingAccountID:
-    Description: Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot
+    Description: Account ID of the AWS account that assumes the IAM role to invoke Lex chatbot.
     Type: String
 
   ExternalID:
-    Description: The organization's ID
+    Description: The organization's ID.
     Type: String
  
 Conditions:
@@ -214,7 +214,7 @@ Resources:
     - LambdaFunctionIAMPolicy
     Type: AWS::Lambda::Function
     Properties:
-      Description: Copies objects from a source S3 bucket to a destination
+      Description: Copies objects from a source S3 bucket to a destination.
       Handler: index.handler
       Runtime: python3.6
       Role: !GetAtt LambdaFunctionIAMRole.Arn
@@ -344,7 +344,7 @@ Resources:
 
 Outputs:
   AssumeIAMRoleARN:
-    Description: ARN of IAM Role used for Cross Account Integration
+    Description: Amazon Resource Name (ARN) of IAM role used for cross-account integration.
     Value: !GetAtt LexBotStack.Outputs.AssumeIAMRoleARN
 
   KendraIndexName:
@@ -352,7 +352,7 @@ Outputs:
     Value: !Ref KendraIndexName
   
   KendraSearchIntentLambdaFunctionName:
-    Description: Name of Lambda Function which handles Kendra Search intent
+    Description: Name of AWS Lambda function that handles Kendra search intent.
     Value: !GetAtt KendraSearchIntentStack.Outputs.LambdaFunctionARN
 
   LexBotName:
