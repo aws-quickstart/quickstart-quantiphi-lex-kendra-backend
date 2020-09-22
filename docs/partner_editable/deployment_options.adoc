@@ -1,5 +1,3 @@
 // There are generally two deployment options. If additional are required, add them here
 
-This Quick Start provides the following deployment option:
-
-* *Deploy {partner-product-name} into an AWS Account (end-to-end deployment)*. This option builds a new AWS environment consisting of the Amazon Lex chatbot, AWS Lambda functions, an Amazon Kendra index, an Amazon S3 data source, sample FAQ file, and other infrastructure components.
+This Quick Start provides a single deployment option that builds a new AWS environment consisting of the Amazon Lex chatbot, AWS Lambda functions, an Amazon Kendra index, an Amazon S3 data source, a sample FAQ file, and other infrastructure components.

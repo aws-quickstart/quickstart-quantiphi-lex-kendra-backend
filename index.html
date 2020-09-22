@@ -880,7 +880,7 @@ collaborated with AWS on the content of the Quick Start.
 <p>This Quick Start lets third-party products integrate with Amazon Lex and Amazon Kendra to provide answers to user questions that originate from a document search interface.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start creates an Amazon Lex chatbot with an Amazon Kendra index. The index, along with an FAQ source, is linked to an S3 bucket data repository. The Amazon Lex chatbot is connected to the Amazon Kendra index via the Amazon Kendra search intent.</p>
+<p>This Quick Start creates an Amazon Lex chatbot with an Amazon Kendra index. The index is linked to an Amazon S3 bucket data repository, which contains a sample FAQ document for testing. The Amazon Lex chatbot is connected to the Amazon Kendra index via the Amazon Kendra search intent.</p>
 </div>
 </div>
 </div>
@@ -934,9 +934,6 @@ After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.co
 </div>
 <div class="paragraph">
 <p>As shown in Figure 1, the Quick Start sets up the following:</p>
-</div>
-<div class="paragraph">
-<p>This Quick Start sets up the following:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1073,20 +1070,16 @@ Certain Regions are available on an opt-in basis. Refer to the AWS Documentation
 <div class="sect3">
 <h4 id="_prepare_for_the_deployment">Prepare for the deployment</h4>
 <div class="paragraph">
-<p>Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot.</p>
+<p>Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://fwd.aws/j4R5m">Quick Start repository</a> contains a sample FAQ file that you can upload to the S3 bucket and use for testing after you deploy the Quick Start. See <a href="#_test_the_deployment">Test the deployment</a> for more information.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_deployment_options">Deployment options</h4>
 <div class="paragraph">
-<p>This Quick Start provides the following deployment option:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Deploy Amazon Lex chatbot with Amazon Kendra into an AWS Account (end-to-end deployment)</strong>. This option builds a new AWS environment consisting of the Amazon Lex chatbot, AWS Lambda functions, an Amazon Kendra index, an Amazon S3 data source, sample FAQ file, and other infrastructure components.</p>
-</li>
-</ul>
+<p>This Quick Start provides a single deployment option that builds a new AWS environment consisting of the Amazon Lex chatbot, AWS Lambda functions, an Amazon Kendra index, an Amazon S3 data source, a sample FAQ file, and other infrastructure components.</p>
 </div>
 </div>
 </div>
@@ -1355,13 +1348,13 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <a href="https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv" target="_blank" rel="noopener">FAQ file</a> from the Git repository, and upload it to your S3 bucket.</p>
+<p>Download the <a href="https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv" target="_blank" rel="noopener">FAQ file</a> from the Git repository, and upload it to your Amazon S3 bucket.</p>
 </li>
 <li>
 <p>Launch the <a href="https://fwd.aws/Q6DVB" target="_blank" rel="noopener">CloudFormation</a> template in your AWS account, and choose <strong>Next</strong>.</p>
 </li>
 <li>
-<p>Provide the S3 bucket name for the 'S3 bucket with documents' parameter, and choose <strong>Next</strong>.</p>
+<p>Provide the S3 bucket name for the S3 bucket with documents parameter, and choose <strong>Next</strong>.</p>
 </li>
 <li>
 <p>On the <strong>Configure stack options</strong> page, choose <strong>Next</strong>.</p>
@@ -1370,14 +1363,13 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <p>Review the details, provide IAM_CAPABILITIES by selecting the check boxes under the <strong>Capabilities</strong> section, and choose <strong>Create stack</strong>. Creating the stack takes approximately 25 minutes.</p>
 </li>
 <li>
-<p>After the stack is created, go to the Amazon Lex console, find the bot named 'self_service_lex_bot', and choose <strong>Test Chatbot</strong> to start the conversation.</p>
+<p>After the stack is created, go to the Amazon Lex console, find the bot named self_service_lex_bot, and choose <strong>Test Chatbot</strong> to start the conversation.</p>
 </li>
 <li>
 <p>Test the Amazon Lex chatbot intents by typing ‘Hi’. You should receive the following response: <em>‘Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I&#8217;m not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?’</em></p>
 </li>
 <li>
-<p>Test the Amazon Kendra search capabilities and connection with Amazon Lex by typing ‘What preventive measures can I take?’. You should receive the following response: <em>On searching the Enterprise repository, I have found the following answer in the FAQs. Wash your hands often, avoid close contact with people and cover your mouth and nose with a cloth face cover when around people, monitor your health, clean and disinfect frequently touched surfaces daily.’</em>
-and cover your mouth and nose with a cloth face cover when around people, monitor your health, clean and disinfect frequently touched surfaces daily.’</p>
+<p>Test the Amazon Kendra search capabilities and connection with Amazon Lex by typing ‘What preventive measures can I take?’. You should receive the following response: <em>On searching the Enterprise repository, I have found the following answer in the FAQs. Wash your hands often, avoid close contact with people and cover your mouth and nose with a cloth face cover when around people, monitor your health, clean and disinfect frequently touched surfaces daily.’</em></p>
 </li>
 </ol>
 </div>
@@ -1467,7 +1459,7 @@ and to share your customizations with others.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-22 01:55:07 UTC
+Last updated 2020-09-22 15:01:06 UTC
 </div>
 </div>
 </body>
