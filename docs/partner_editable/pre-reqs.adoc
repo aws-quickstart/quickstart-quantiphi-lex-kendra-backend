@@ -2,4 +2,6 @@
 
 ==== Prepare for the deployment
 
-Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot.
+Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot. 
+
+The https://fwd.aws/j4R5m[Quick Start repository] contains a sample FAQ file that you can upload to the S3 bucket and use for testing after you deploy the Quick Start. See link:#_test_the_deployment[Test the deployment] for more information.

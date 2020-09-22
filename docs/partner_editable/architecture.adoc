@@ -8,8 +8,6 @@ image::../images/quantiphi-architecture-diagram.png[Architecture,width=648,heigh
 
 As shown in Figure 1, the Quick Start sets up the following:
 
-This Quick Start sets up the following:
-
 * An Amazon Lex chatbot with associated intents for sending search queries to Amazon Kendra.
 * An Amazon Kendra index for providing search results.
 * An Amazon S3 bucket used as the data source.
