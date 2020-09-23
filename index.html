@@ -1070,7 +1070,7 @@ Certain Regions are available on an opt-in basis. Refer to the AWS Documentation
 <div class="sect3">
 <h4 id="_prepare_for_the_deployment">Prepare for the deployment</h4>
 <div class="paragraph">
-<p>Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket repository in place. This repository contains the documents that are indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot.</p>
+<p>Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket in place. This S3 bucket should contain the documents that you want to be indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot, and used as a data source by Amazon Kendra. You can bring your own S3 bucket or, use the Quantiphi&#8217;s S3 bucket s3://quickstart-quantiphi-lex-kendra/ as an example, which has sample documents.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="https://fwd.aws/j4R5m">Quick Start repository</a> contains a sample FAQ file that you can upload to the S3 bucket and use for testing after you deploy the Quick Start. See <a href="#_test_the_deployment">Test the deployment</a> for more information.</p>
@@ -1343,27 +1343,12 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <h2 id="_test_the_deployment">Test the deployment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To test the deployment with a sample document, perform these steps:</p>
+<p>To test the deployment using Quantiphi&#8217;s S3 bucket with sample document, perform these steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <a href="https://github.com/aws-quickstart/quickstart-quantiphi-lex-kendra-backend/blob/master/assets/FAQ-document/COVID_FAQ.csv" target="_blank" rel="noopener">FAQ file</a> from the Git repository, and upload it to your Amazon S3 bucket.</p>
-</li>
-<li>
-<p>Launch the <a href="https://fwd.aws/Q6DVB" target="_blank" rel="noopener">CloudFormation</a> template in your AWS account, and choose <strong>Next</strong>.</p>
-</li>
-<li>
-<p>Provide the S3 bucket name for the <strong>S3 bucket with documents</strong> parameter, and choose <strong>Next</strong>.</p>
-</li>
-<li>
-<p>On the <strong>Configure stack options</strong> page, choose <strong>Next</strong>.</p>
-</li>
-<li>
-<p>Review the details, provide IAM_CAPABILITIES by selecting the check boxes under the <strong>Capabilities</strong> section, and choose <strong>Create stack</strong>. Creating the stack takes approximately 25 minutes.</p>
-</li>
-<li>
-<p>After the stack is created, go to the Amazon Lex console, find the bot named <em>self_service_lex_bot</em>, and choose <strong>Test Chatbot</strong> to start the conversation.</p>
+<p>Go to the Amazon Lex console, find the bot named <em>self_service_lex_bot</em>, and choose <strong>Test Chatbot</strong> to start the conversation.</p>
 </li>
 <li>
 <p>Test the Amazon Lex chatbot intents by typing ‘Hi’. You should receive the following response: <em>‘Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I&#8217;m not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?’</em></p>
@@ -1459,7 +1444,7 @@ and to share your customizations with others.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-23 16:28:58 UTC
+Last updated 2020-09-23 19:03:11 UTC
 </div>
 </div>
 </body>
