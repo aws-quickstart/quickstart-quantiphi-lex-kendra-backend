@@ -4,7 +4,7 @@
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
-To test the deployment using Quantiphi's S3 bucket with sample document, perform these steps:
+To test the deployment using Quantiphi's S3 bucket with the sample documents, perform these steps:
 
 . Go to the Amazon Lex console, find the bot named _self_service_lex_bot_, and choose *Test Chatbot* to start the conversation. 
 . Test the Amazon Lex chatbot intents by typing ‘Hi’. You should receive the following response: _‘Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I'm not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?’_
