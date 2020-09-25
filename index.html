@@ -762,6 +762,22 @@ table.tableblock .title,
 table p {
   margin: 0rem;
 }
+
+/* Add border around hyperlink images */
+a img {
+    border: 1px solid #A4A4A4;
+}
+
+.preview_mode {
+	border-color:#e0e0dc;
+	-webkit-box-shadow:0 1px 4px #e0e0dc;
+	box-shadow:0 1px 4px #e0e0dc;
+  background:#ffffb3;
+  padding-bottom: 2rem;
+}
+.preview_mode .tableblock {
+  background:#ffffb3;
+}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -784,16 +800,18 @@ table p {
 </li>
 <li><a href="#_deployment_steps">Deployment steps</a>
 <ul class="sectlevel2">
+<li><a href="#_sign_in_to_your_aws_account">Sign in to your AWS account</a></li>
+<li><a href="#_launch_the_quick_start">Launch the Quick Start</a></li>
 <li><a href="#_parameters_for_launching_stack_creation">Parameters for launching stack creation</a></li>
 </ul>
 </li>
+<li><a href="#_test_the_deployment">Test the deployment</a></li>
+<li><a href="#_other_useful_information">Other useful information</a></li>
+<li><a href="#_faq">FAQ</a></li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
 <li><a href="#_quick_start_reference_deployments">Quick Start reference deployments</a></li>
-<li><a href="#_github_repository">GitHub repository</a>
-<ul class="sectlevel3">
+<li><a href="#_github_repository">GitHub repository</a></li>
 <li><a href="#_notices">Notices</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
@@ -804,23 +822,15 @@ table p {
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://aws-quickstart.s3.amazonaws.com/quickstart-quantiphi-lex-kendra-backend/docs/boilerplate/.images/aws-quickstart-graphic.png" alt="QS" width="80" height="80">
+<img src="images/aws-quickstart-graphic.png" alt="QS" width="80" height="80">
 </div>
 </div>
-<h3 id="_draft_document_unofficial_guidance" class="discrete text-center">DRAFT DOCUMENT / UNOFFICIAL GUIDANCE</h3>
-<div class="exampleblock">
-<div class="content">
 <div class="paragraph text-center">
 <p><strong>September, 2020</strong><br>
 <em>Sanchit Jain, Quantiphi</em><br>
 <em>Shivansh Singh, Solutions Architect, AWS</em></p>
 </div>
-</div>
-</div>
-<div class="paragraph">
-<p><em><strong>The above information is configured within <code>partner_editable/_settings.adoc</code></strong></em></p>
-</div>
-<div class="admonitionblock tip">
+<div class="admonitionblock tip text-left">
 <table>
 <tr>
 <td class="icon">
@@ -842,17 +852,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/overview_target_and_usage</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
 <p>This Quick Start reference deployment guide provides step-by-step instructions for deploying Amazon Lex chatbot with Amazon Kendra on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
 <p>This Quick Start sets up an Amazon Kendra index along with a data source that uses an Amazon Simple Storage Service (Amazon S3) bucket as the document repository, and then integrates them with an Amazon Lex chatbot. Organizations can use this Quick Start to enhance the search and fulfillment capabilities of their Amazon Lex chatbot by letting users query the enterprise data repository using Amazon Kendra.</p>
-</div>
-</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -861,7 +864,7 @@ report bugs, or submit feature ideas for this Quick Start.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Please know that we may share who uses AWS
+Amazon may share who uses AWS
 Quick Starts with the AWS Partner Network (APN) Partner that
 collaborated with AWS on the content of the Quick Start.
 </td>
@@ -874,17 +877,10 @@ collaborated with AWS on the content of the Quick Start.
 <h2 id="_amazon_lex_chatbot_with_amazon_kendra_on_aws">Amazon Lex chatbot with Amazon Kendra on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/product_description.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
 <p>This Quick Start lets third-party products integrate with Amazon Lex and Amazon Kendra to provide answers to user questions that originate from a document search interface.</p>
 </div>
 <div class="paragraph">
 <p>This Quick Start creates an Amazon Lex chatbot with an Amazon Kendra index. The index is linked to an Amazon S3 bucket data repository, which contains a sample FAQ document for testing. The Amazon Lex chatbot is connected to the Amazon Kendra index via the Amazon Kendra search intent.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -900,7 +896,7 @@ using the Quick Start.</p>
 <p>The AWS CloudFormation template for this Quick Start includes
 configuration parameters that you can customize. Some of the settings,
 such as the instance type, affect the cost of deployment. For cost estimates,
-see the pricing pages for each AWS service you will use. Prices are subject to change.</p>
+see the pricing pages for each AWS service you use. Prices are subject to change.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -909,7 +905,7 @@ see the pricing pages for each AWS service you will use. Prices are subject to c
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">AWS Cost and Usage Report</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. It provides cost estimates based on usage throughout each month and finalizes the data at the end of the month. For more information about the report, see the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html" target="_blank" rel="noopener">AWS documentation</a>.
+After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">AWS Cost and Usage Report</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. It provides cost estimates based on usage throughout each month and aggregates the data at the end of the month. For more information about the report, see the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html" target="_blank" rel="noopener">AWS documentation</a>.
 </td>
 </tr>
 </table>
@@ -920,25 +916,13 @@ After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.co
 <h2 id="_software_licenses">Software licenses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/licenses.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
 <p>This Quick Start does not require a license to deploy Amazon Lex chatbot with Amazon Kendra.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_architecture">Architecture</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/architecture.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
 <div class="paragraph">
 <p>Deploying this Quick Start with default parameters builds the following Amazon Lex chatbot with Amazon Kendra environment in the AWS Cloud.</p>
 </div>
@@ -972,8 +956,6 @@ After you deploy the Quick Start, enable the <a href="https://docs.aws.amazon.co
 </div>
 </div>
 </div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="_planning_the_deployment">Planning the deployment</h2>
 <div class="sectionbody">
@@ -989,14 +971,7 @@ deploy, and operate your infrastructure and applications on the AWS
 Cloud.</p>
 </div>
 <div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/specialized_knowledge.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
 <p>This Quick Start assumes familiarity with AWS CloudFormation, AWS Lambda, Amazon Lex, Amazon S3, and Amazon Kendra.</p>
-</div>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -1011,18 +986,13 @@ Cloud.</p>
 <div class="sect2">
 <h3 id="_technical_requirements">Technical requirements</h3>
 <div class="paragraph">
-<p>Before you launch the Quick Start, your account must be configured as specified below. Otherwise, deployment might fail.</p>
+<p>Before you launch the Quick Start, your account must be configured as specified in the following table. Otherwise, deployment might fail.</p>
 </div>
 <div class="sect3">
 <h4 id="_resource_limits">Resource limits</h4>
 <div class="paragraph">
 <p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might need to request increases if your existing deployment currently uses these resources, and this Quick Start deployment could result in exceeding the default quotas. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see the <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
 </div>
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/service_limits.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1066,26 +1036,14 @@ Cloud.</p>
 </tbody>
 </table>
 </div>
-</div>
-</div>
 <div class="sect3">
-<h4 id="_supported_regions">Supported regions</h4>
-<div class="paragraph">
-<p>The following regions are currently supported by this Quick Start.</p>
-</div>
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/regions.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
+<h4 id="_supported_regions">Supported Regions</h4>
 <div class="ulist">
 <ul>
 <li>
 <p>This deployment includes Amazon Lex and Amazon Kendra, which aren&#8217;t currently supported in all AWS Regions. For a current list of supported Regions for Amazon Lex and Amazon Kendra, see the <a href="https://docs.aws.amazon.com/general/latest/gr/aws-service-information.html" target="_blank" rel="noopener">service endpoints and quotas</a> page in the AWS documentation.</p>
 </li>
 </ul>
-</div>
-</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1094,26 +1052,10 @@ Cloud.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Certain regions are available on an opt-in basis. Refer to the AWS Documentation on <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html" target="_blank" rel="noopener">Managing Regions</a> for more information.
+Certain Regions are available on an opt-in basis. Refer to the AWS Documentation on <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html" target="_blank" rel="noopener">Managing Regions</a> for more information.
 </td>
 </tr>
 </table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_ec2_key_pairs">EC2 key pairs</h4>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p><em>This section is conditional on EC2 instances being used in the Cloudformation Templates</em></p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Make sure that at least one <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">Amazon EC2 key pair</a> exists in your AWS account in the Region where you plan to deploy the Quick Start. Make note of the key pair name. You need it during deployment. To create a key pair, follow the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">instructions in the AWS documentation</a>.</p>
-</div>
-<div class="paragraph">
-<p>For testing or proof-of-concept purposes, we recommend creating a new key pair instead of using one that’s already being used by a production instance.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1124,14 +1066,9 @@ Certain regions are available on an opt-in basis. Refer to the AWS Documentation
 <div class="paragraph">
 <p>The <em>AdministratorAccess</em> managed policy within IAM provides sufficient permissions, although your organization may choose to use a custom policy with more restrictions.</p>
 </div>
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/pre-reqs.adoc</code></strong></em></p>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>==== Prepare for the deployment</p>
-</div>
+<div class="sect3">
+<h4 id="_prepare_for_the_deployment">Prepare for the deployment</h4>
 <div class="paragraph">
 <p>Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket in place. This S3 bucket should contain the documents that you want to be indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot, and is used as a data source by Amazon Kendra. You can bring your own S3 bucket or use Quantiphi&#8217;s S3 bucket (s3://quickstart-quantiphi-lex-kendra/) with sample documents as an example.</p>
 </div>
@@ -1139,19 +1076,10 @@ Certain regions are available on an opt-in basis. Refer to the AWS Documentation
 <p>The <a href="https://fwd.aws/j4R5m">Quick Start repository</a> contains a sample FAQ file that you can upload to the S3 bucket and use for testing after you deploy the Quick Start. See <a href="#_test_the_deployment">Test the deployment</a> for more information.</p>
 </div>
 </div>
-</div>
-</div>
 <div class="sect3">
 <h4 id="_deployment_options">Deployment options</h4>
 <div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/deployment_options.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
 <p>This Quick Start provides a single deployment option that builds a new AWS environment consisting of the Amazon Lex chatbot, AWS Lambda functions, an Amazon Kendra index, an Amazon S3 data source, a sample FAQ file, and other infrastructure components.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1160,14 +1088,8 @@ Certain regions are available on an opt-in basis. Refer to the AWS Documentation
 <div class="sect1">
 <h2 id="_deployment_steps">Deployment steps</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/deploy_steps</em>.adoc</code></strong>_</p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>=== Sign in to your AWS account</p>
-</div>
+<div class="sect2">
+<h3 id="_sign_in_to_your_aws_account">Sign in to your AWS account</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1178,9 +1100,9 @@ Certain regions are available on an opt-in basis. Refer to the AWS Documentation
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>=== Launch the Quick Start</p>
 </div>
+<div class="sect2">
+<h3 id="_launch_the_quick_start">Launch the Quick Start</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1230,8 +1152,6 @@ You are responsible for the cost of the AWS services used while running this Qui
 </li>
 </ol>
 </div>
-</div>
-</div>
 <div class="paragraph">
 <p>In the following tables, parameters are listed by category and described separately for the deployment options. When you finish reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
 </div>
@@ -1242,11 +1162,12 @@ You are responsible for the cost of the AWS services used while running this Qui
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-We recommend keeping the default settings for the three parameters labled 'Quick Start S3 bucket name', 'Quick Start S3 bucket
-Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick Start templates for your own deployment projects. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For additional details, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
+Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
+Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
 </td>
 </tr>
 </table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_parameters_for_launching_stack_creation">Parameters for launching stack creation</h3>
@@ -1260,7 +1181,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -1280,7 +1201,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket with documents
 (<code>KendraS3BucketName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires Input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket the contains the Kendra docs for syncing.</p></td>
 </tr>
 <tr>
@@ -1313,7 +1234,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -1336,7 +1257,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -1344,13 +1265,13 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assuming account ID
 (<code>AssumingAccountID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires Input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Account ID of the AWS account that assumes the IAM role to invoke Lex chatbot.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Organization&#8217;s ID
 (<code>ExternalID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires Input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The organization&#8217;s ID.</p></td>
 </tr>
 </tbody>
@@ -1365,7 +1286,7 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -1405,24 +1326,22 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 <p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Amazon Lex chatbot with Amazon Kendra deployment is ready.</p>
 </li>
 <li>
-<p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in Figure 2, to view the resources that were created.</p>
+<p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in <a href="#cfn_outputs">Amazon Lex chatbot with Amazon Kendra outputs after successful deployment</a>, to view the created resources.</p>
 </li>
 </ol>
 </div>
 <div id="cfn_outputs" class="imageblock">
 <div class="content">
-<img src="images/cfn_outputs.png" alt="cfn_outputs" width="648" height="439">
+<a class="image" href="images/cfn_outputs.png"><img src="images/cfn_outputs.png" alt="cfn_outputs" width="648" height="439"></a>
 </div>
 <div class="title">Figure 2. Amazon Lex chatbot with Amazon Kendra outputs after successful deployment</div>
 </div>
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/additional_info.adoc</code></strong></em></p>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>== Test the deployment</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_test_the_deployment">Test the deployment</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To test the deployment using Quantiphi&#8217;s S3 bucket with the sample documents, perform these steps:</p>
 </div>
@@ -1439,22 +1358,19 @@ Region', and 'Quick Start S3 key prefix', unless you are customizing the Quick S
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>== Other useful information</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_other_useful_information">Other useful information</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can use a custom user interface or third-party product as a front end for users to interact with and submit questions. As a back end, use the Amazon Lex chatbot that is deployed with this Quick Start to connect with Amazon Kendra to answer user questions.</p>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/faq_troubleshooting.adoc</code></strong></em></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>== FAQ</p>
-</div>
+<div class="sect1">
+<h2 id="_faq">FAQ</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
@@ -1484,9 +1400,6 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="_send_us_feedback">Send us feedback</h2>
 <div class="sectionbody">
@@ -1513,23 +1426,25 @@ and to share your customizations with others.</p>
 </div>
 <hr>
 <div class="paragraph">
-<p>© 2020, Amazon Web Services, Inc. or its affiliates, and Quantiphi. All rights reserved.</p>
+<p>© 2020, Amazon Web Services Inc., or its affiliates, and Quantiphi. All rights reserved.</p>
 </div>
-<div class="sect3">
-<h4 id="_notices">Notices</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notices">Notices</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>This document is provided for informational purposes only. It represents AWS’s current product offerings and practices as of the date of issue of this document, which are subject to change without notice. Customers are responsible for making their own independent assessment of the information in this document and any use of AWS’s products or services, each of which is provided “as is” without warranty of any kind, whether express or implied. This document does not create any warranties, representations, contractual commitments, conditions or assurances from AWS, its affiliates, suppliers or licensors. The responsibilities and liabilities of AWS to its customers are controlled by AWS agreements, and this document is not part of, nor does it modify, any agreement between AWS and its customers.</p>
+<p>This document is provided for informational purposes only. It represents AWS’s current product offerings and practices as of the date of issue of this document, which are subject to change without notice. Customers are responsible for making their own independent assessment of the information in this document and any use of AWS’s products or services, each of which is provided “as is” without warranty of any kind, whether expressed or implied. This document does not create any warranties, representations, contractual commitments, conditions, or assurances from AWS, its affiliates, suppliers, or licensors. The responsibilities and liabilities of AWS to its customers are controlled by AWS agreements, and this document is not part of, nor does it modify, any agreement between AWS and its customers.</p>
 </div>
 <div class="paragraph">
-<p>The software included with this paper is licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at <a href="http://aws.amazon.com/apache2.0/" class="bare">http://aws.amazon.com/apache2.0/</a> or in the "license" file accompanying this file. This code is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
-</div>
+<p>The software included with this paper is licensed under the Apache License, version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at <a href="http://aws.amazon.com/apache2.0/" class="bare">http://aws.amazon.com/apache2.0/</a> or in the accompanying "license" file. This code is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied. See the License for specific language governing permissions and limitations.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-25 15:21:50 UTC
+Last updated 2020-09-25 15:25:21 UTC
 </div>
 </div>
 </body>
