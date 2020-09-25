@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: A master template which creates a Lex Bot and integrate it with a Kendra Index with S3 bucket as a document respository. (qs-1qu380l7l)
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: "Launch stack creation"
+    EntrypointName: "Parameters for launching stack creation"
 
   AWS::CloudFormation::Interface: 
     ParameterGroups:
