@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A Cloudformation template to create the handler lambda function which will query the Kendra Index. (qs-1qu380l7d)
+
+Parameters:      
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    
+  ArtifactsS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of S3 bucket in which Lambda code is present
+    Type: String
+
+  KendraS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of the S3 bucket which has the Kendra docs for syncing
+    Type: String
+
+Resources: 
+  LambdaFunctionIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - kendra.amazonaws.com
+            - lex.amazonaws.com
+            - s3.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+
+  LambdaFunctionIAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Join
+        - ''
+        - - !Ref 'LambdaFunctionIAMRole'
+          - _policy
+      Roles:
+      - Ref: LambdaFunctionIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadBucket"
+          Resource:
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
+          - "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}"
+          - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - "lex:DeleteBot"
+          - "lex:DeleteSlotTypeVersion"
+          - "lex:GetBuiltinSlotTypes"
+          - "lex:GetSlotType"
+          - "lex:PutBot"
+          - "lex:PutSlotType"
+          - "lex:GetBot"
+          - "lex:GetSlotTypes"
+          - "lex:DeleteSlotType"
+          - "lex:DeleteIntent"
+          - "lex:GetIntent"
+          - "lex:PutIntent"
+          - "lex:DeleteIntentVersion"
+          - "lex:GetBuiltinIntents"
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "kendra:Query"
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "iam:GetRole"
+          - "iam:PassRole"
+          Resource:
+          - !GetAtt LambdaFunctionIAMRole.Arn
+        - Effect: Allow
+          Action:
+          - "lambda:InvokeFunction"
+          - "lambda:AddPermission"
+          - "lambda:RemovePermission"
+          Resource:
+          - "*"
+  
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaFunctionIAMRole.Arn
+      Environment:
+        Variables:
+          KENDRA_DATA_BUCKET: !Ref KendraS3BucketName
+          KENDRA_INDEX: !ImportValue KendraIndexID
+      Code:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/kendra_search_intent_handler_lambda/kendra_search_intent_handler_lambda.zip"
+      Runtime: python3.6
+      Timeout: 300
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: lex.amazonaws.com
+   
+
+Outputs:
+  
+  IAMRoleARN:
+    Description: ARN of IAM Role used for handling Kendra Search Intent
+    Value: !GetAtt LambdaFunctionIAMRole.Arn
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function used for handling Kendra Search Intent
+    Value: !GetAtt LambdaFunction.Arn
+

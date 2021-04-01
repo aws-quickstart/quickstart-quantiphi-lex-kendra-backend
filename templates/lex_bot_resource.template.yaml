@@ -1,0 +1,214 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A Cloudformation template to launch a Custom Lambda backed resource for Lex. (qs-1qu380l87)
+
+Parameters:
+
+  QSS3KeyPrefix:
+    Type: String
+    Description: The S3 key name prefix used for your copy of Quick Start assets
+    Default: quickstart-quantiphi-lex-kendra-backend/
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+  
+  ArtifactsS3BucketName:
+    AllowedPattern: ^[a-z0-9][a-z0-9-.]*$
+    Description: The name of S3 Bucket in which Lambda code is present
+    Type: String
+
+  LexBotJSONKey:
+    AllowedPattern: ^.*.json$
+    Description: JSON configuration of the Lex bot
+    Type: String
+
+  LambdaFunctionARN:
+    AllowedPattern: arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?
+    Description: ARN of Kendra Search intent Lambda
+    Type: String
+  
+  AssumingAccountID:
+    Description: Account ID of the AWS Account which will assume the IAM Role to invoke Lex ChatBot
+    Type: String
+
+  ExternalID:
+    Description: The organization's ID
+    Type: String
+
+Resources: 
+  AssumeIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AssumingAccountID}:root"
+          Action: sts:AssumeRole
+          Condition:
+            StringEquals:
+              sts:ExternalId: !Ref ExternalID
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonLexReadOnly"
+        - "arn:aws:iam::aws:policy/AmazonLexRunBotsOnly"
+
+  LexSLRole:
+    Type: AWS::IAM::ServiceLinkedRole
+    Properties:
+      AWSServiceName: lex.amazonaws.com
+      Description: Amazon Lex Service Lined Role
+
+  LexBotIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lex.amazonaws.com
+            - kendra.amazonaws.com
+            - s3.amazonaws.com
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+
+  LexBotIAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Join
+        - ''
+        - - !Ref 'LexBotIAMRole'
+          - _policy
+      Roles:
+      - Ref: LexBotIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Resource:
+          - arn:aws:logs:*:*:*
+        - Effect: Allow
+          Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadBucket"
+          Resource:
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
+          - "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - "lex:DeleteBot"
+          - "lex:DeleteSlotTypeVersion"
+          - "lex:GetBuiltinSlotTypes"
+          - "lex:GetSlotType"
+          - "lex:PutBot"
+          - "lex:PutSlotType"
+          - "lex:GetBot"
+          - "lex:GetSlotTypes"
+          - "lex:DeleteSlotType"
+          - "lex:DeleteIntent"
+          - "lex:GetIntent"
+          - "lex:PutIntent"
+          - "lex:GetBotAliases"
+          - "lex:DeleteIntentVersion"
+          - "lex:GetBuiltinIntents"
+          - "lex:GetBuiltinIntent"
+          - "lex:DeleteBotAlias"
+          - "lex:GetBots"
+          - "lex:GetSlotTypeVersions"
+          - "lex:CreateSlotTypeVersion"
+          - "lex:DeleteBotVersion"
+          - "lex:GetIntentVersions"
+          - "lex:GetIntents"
+          - "lex:GetBotVersions"
+          - "lex:CreateBotVersion"
+          - "lex:GetBotAlias"
+          - "lex:CreateIntentVersion"
+          - "lex:PutBotAlias"
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "iam:GetRole"
+          - "iam:PassRole"
+          Resource:
+          - !GetAtt LexBotIAMRole.Arn
+        - Effect: Allow
+          Action:
+          - "lambda:AddPermission"
+          - "lambda:RemovePermission"
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "events:PutRule"
+          - "events:DeleteRule"
+          - "events:PutTargets"
+          - "events:RemoveTargets"
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - "kendra:Query"
+          Resource:
+          - "*"
+
+  CrHelperLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.6
+        - python3.7
+      Content:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lambda_layers/lambda_layers.zip"
+
+  LexBotOpsFunction:
+    DependsOn:
+    - LexBotIAMPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.6          
+      Timeout: 600
+      Role: !GetAtt LexBotIAMRole.Arn
+      MemorySize: 256
+      Handler: lex_custom_resource.lambda_handler
+      Layers: [!Ref CrHelperLayer]
+      Code:
+        S3Bucket: !Ref ArtifactsS3BucketName
+        S3Key: !Sub "${QSS3KeyPrefix}functions/packages/lex_custom_resource/lex_custom_resource.zip"
+      Description: Lambda backed Custom-Resource for Lex bot operations
+
+  LexBotOpsFunctionTrigger:
+    Type: Custom::LexBotOpsFunctionTrigger
+    Properties:
+      ServiceToken: !GetAtt LexBotOpsFunction.Arn
+      LexS3Bucket: !Ref ArtifactsS3BucketName
+      LexFileKey: !Sub "${QSS3KeyPrefix}${LexBotJSONKey}"
+      FulfillmentLambda: !Ref LambdaFunctionARN
+      KendraSearchRole: !GetAtt LexBotIAMRole.Arn
+      KendraIndex: !ImportValue KendraIndexID
+      AccountID: !Sub '${AWS::AccountId}'
+
+Outputs:
+  AssumeIAMRoleARN:
+    Description: ARN of IAM Role used for Cross Account Integration
+    Value: !GetAtt AssumeIAMRole.Arn
+
+  IAMRoleARN:
+    Description: ARN of IAM Role used for Lex Custom Resource Operations
+    Value: !GetAtt LexBotIAMRole.Arn
+  
+  LambdaFunctionARN:
+    Description: ARN of Lambda Function used for Lex Custom Resource Operations
+    Value: !GetAtt LexBotOpsFunction.Arn
+
+  LexBotName:
+    Description: Lex Bot Name
+    Value: !GetAtt LexBotOpsFunctionTrigger.BotName
+

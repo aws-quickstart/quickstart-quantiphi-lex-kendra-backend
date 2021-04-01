@@ -1,0 +1,792 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0",
+    "importType": "LEX",
+    "importFormat": "JSON"
+  },
+  "resource": {
+    "name": "self_service_lex_bot",
+    "version": "2",
+    "intents": [
+      {
+        "name": "Treatment",
+        "version": "5",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "What is the treatment for covid Nineteen",
+          "treatment"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: To date, there is no specific medicine to prevent or treat COVID-19. However, those affected should receive care to relieve symptoms. People with serious illness should be hospitalized. Most patients recover thanks to supportive care. Antibiotics do not work against viruses; they only work on bacterial infections. COVID-19 is caused by a virus, so antibiotics do not work. Antibiotics should not be used as a means of prevention or treatment of COVID-19. They should only be used as directed by a physician to treat a bacterial infection."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Origin",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how did the virus start",
+          "origin of virus",
+          "from where it's originated",
+          "first country to get",
+          "outbreak of virus"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: COVID-19 was first detected in Wuhan City, Hubei Province, China. The first infections were linked to a live animal market, but the virus is now spreading from person-to-person."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Risk_Severity",
+        "version": "5",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Who is most at risk for coronavirus",
+          "risk severity"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Everyone is at risk to get COVID-19, though not everyone will have the same severity of symptons. The CDC has stated that older adults and people of any age who have serious underlying medical conditions may be at higher risk for more serious complications from COVID-19."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Sick",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "should I go to hospital if I feel sick",
+          "m feeling sick what to do",
+          "what should i do m not feeling ill"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Please contact your primary care provider if you or your family members are having symptoms of COVID-19. If you are experiencing a life threatening emergency, please call 911."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Indoor_Quarantine",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how long should I stay at home",
+          "indoor quarantine",
+          "quarantine"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The Center for Disease Control and Prevention recommends that people stay at home if they are showing signs of COVID-19 infection. Please check your local authorities for specific self quarantine guidelines during any shelter in place."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Not_Satisfied",
+        "version": "2",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "I do not have the information I need"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Thank you for the feedback. Goodbye!"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Outdoor_Activities",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Can I still take a walk in the neighborhood",
+          "outdoor activities"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Please check your local city, county, and state government website for specific guidelines during a shelter in place."
+            }
+          ]
+        }
+      },
+      {
+        "name": "My_Name",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "What's your name",
+          "who are you"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: I'm the COVID-19 Rapid Response Bot."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Welcome_Greet",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "welcome",
+          "hello",
+          "hi",
+          "hey"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I'm not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Social_Distancing",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Why is social distancing so important"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Social distancing is deliberately increasing the physical space between people to avoid spreading illness. Staying at least six feet away from other people decreases the possibility of catching COVID-19. Cancelling events that are likely to draw crowds is an example of social distancing."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Live_Chat",
+        "version": "2",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "I want to talk to a live agent."
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Okay. I'm transferring you to a live agent right now."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Define",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "What is Covid Nineteen",
+          "define covid"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The World Health Organization states that Coronaviruses (CoV) are a large family of viruses that cause illness ranging from the common cold to a more severe lung infection. COVID-19 is the disease caused by a novel coronavirus."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Weather",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "will corona dissapear when it gets warmer outside",
+          "Weather"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: It is not yet known whether weather and temperature impact the spread of COVID-19. Some other viruses, like the common cold and flu, spread more during cold weather months but that does not mean it is impossible to become sick with these viruses during other months. At this time, it is not known whether the spread of COVID-19 will decrease when weather becomes warmer. There is much more to learn about the transmissibility, severity, and other features associated with COVID-19 and investigations are ongoing."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Protect",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how to prevent getting Coronavirus",
+          "how to protect our selves"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The virus enters your body through your eyes, nose and/or mouth, so it is important to avoid touching your face with unwashed hands. Wash hands with soap and water for at least 20 seconds. It is also recommended to practic social distancing by staying 6 feet or more away from other people."
+            }
+          ]
+        }
+      },
+      {
+        "name": "No_Participation",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "I don't want to participate",
+          "that's all i need"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Ok, goodbye!"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Pet",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "can my dog catch it",
+          "pet related"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: To date, the CDC has not received any reports of pets or other animals becoming sick with COVID-19. At this time, there is no evidence that companion animals including pets can spread COVID-19. However, since animals can spread other diseases to people, it’s always a good idea to wash your hands after being around animals."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Mask",
+        "version": "2",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "should I wear a mask when I go out"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The World Health Organization urges everyone to use masks wisely. Only wear a mask if you are feeling sick and have COVID-19 symptoms (especially coughing) or looking after someone who may have COVID-19."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Okay",
+        "version": "7",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Tell more about COVID",
+          "i want to know more",
+          "can you tell me more about it",
+          "not enough information",
+          "what other thing you know"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: What do you want to know about COVID-19?"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Satisfied",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "I got the information I needed",
+          "thanks for the information"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Thank you for the feedback. Goodbye!"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Pregnancy",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Will coronavirus harm the fetus in pregnant women",
+          "will it affect pregnancy"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: We do not know at this time if COVID-19 would cause problems during pregnancy or affect the health of the baby after birth. Pregnant women should do the same things as the general public to avoid infection."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Testing",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Where can I get tested if I'm sick",
+          "testing"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: If you currently reside in the state of California, you can get basic screening information through the link below: https://www.projectbaseline.com/covid .If you reside elsewhere, please check with your health care provider for testing information in your area."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Stock_Up",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Is there anything in particular I need to stock up on",
+          "stock up"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Have supplies on hand.Contact your healthcare provider to ask about obtaining extra necessary medications to have on hand in case there is an outbreak of COVID-19 in your community and you need to stay home for a prolonged period of time.If you cannot get extra medications, consider using mail-order for medications.Be sure you have over-the-counter medicines and medical supplies (tissues, etc.) to treat fever and other symptoms. Most people will be able to recover from COVID-19 at home.Have enough household items and groceries on hand so that you will be prepared to stay at home for a period of time."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Spread",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how contagious is the corona",
+          "how does it spreads",
+          "medium of transmission"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The virus is thought to spread mainly between people who are in close contact with one another (within about 6 feet), through respiratory droplets produced when an infected person coughs or sneezes.These droplets can land in the mouths or noses of people who are nearby or possibly be inhaled into the lungs."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Bye",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "That's all for now",
+          "Good bye",
+          "Bye"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Stay safe and goodbye!"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Hand_Sanitizer",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "what if I don't have any sanitizer",
+          "how to make sanitizer",
+          "i want to make sanitizer at home"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: If hand sanitizers are not available, hand washing with soap and water is the recommended, and even better, alternative. Liquor is not effective against coronavirus. For an alcohol-based hand rub to be effective, it must have an alcohol content of 60% to 95%."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Symptoms",
+        "version": "6",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "What are the signs of someone who caught Coronavirus",
+          "symptoms",
+          "what are the symptoms of virus"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: According to the WHO, current symptoms reported for patients with COVID-19 have included mild to severe respiratory illness with fever, cough, and difficulty breathing. Symptoms may appear 2-14 days after exposure."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Help",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how can I help community",
+          "how can i help others",
+          "how can i contribute",
+          "how can i be helpful"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Please reach out to your local community to see how you can help others in need. In some neighborhoods, you can help to deliver items to the elderly, who are most at risk."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Vaccine",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Do we have a vaccine available"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: Possible vaccines and some specific drug treatments are under investigation. They are being tested through clinical trials. The World Health Organization is coordinating efforts to develop vaccines and medicines to prevent and treat COVID-19."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Flu_Difference",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "how is coronavirus different from flu",
+          "how is it different from other"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: A COVID-19 infection has the same signs and symptoms as the common cold and you can only differentiate them through laboratory testing to determine the virus type."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Package_Safety",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "Is it still safe to receive packages",
+          "can i do online shopping"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The likelihood of an infected person contaminating commercial goods is low and the risk of catching the virus that causes COVID-19 from a package that has been moved, travelled, and exposed to different conditions and temperature is also low."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Thank",
+        "version": "5",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "that's great information thank you",
+          "Glad to know",
+          "You are awesome",
+          "thanks",
+          "thank you",
+          "thanks a lot"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: You are welcome!"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Last_On_Surface",
+        "version": "4",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "How long does the last on metal",
+          "last on surface"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: It is not certain how long the virus that causes COVID-19 survives on surfaces. Studies suggest that coronaviruses may persist on surfaces for a few hours or up to several days. This varies depending on different conditions such as the type of surface, temperature or humidity of the environment."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Incubation_Period",
+        "version": "3",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "How long is the incubation",
+          "incubation period"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: According to the World Health Organization, the “incubation period” is the time between catching the virus and showing symptoms of the disease. Most estimates of the incubation period for COVID-19 range from 1-14 days, most commonly around five days. These estimates will be updated as more data becomes available."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Travel",
+        "version": "2",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [
+          "should I not travel during a disease outbreak"
+        ],
+        "slots": [],
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "Amazon Lex: The CDC currently lists six locations with various levels of travel warnings: China, Iran, South Korea, Italy, Japan and Hong Kong. People traveling to these areas should take extreme caution and if trying to return to the United States, can expect restrictions on entry and quarantines upon return. The status of COVID-19 is changing every day, so continue to monitor the CDC’s list of travel notices before traveling."
+            }
+          ]
+        }
+      },
+      {
+        "name": "Kendra_Search_Intent",
+        "version": "9",
+        "fulfillmentActivity": {
+          "codeHook": {
+            "uri": "arn:aws:lambda:region:1234567890:function:lambda",
+            "messageVersion": "1.0"
+          },
+          "type": "CodeHook"
+        },
+        "sampleUtterances": [],
+        "slots": [],
+        "parentIntentSignature": "AMAZON.KendraSearchIntent",
+        "conclusionStatement": {
+          "messages": [
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found a FAQ question for you: ((x-amz-lex:kendra-search-response-question_answer-question-1)), and the answer is ((x-amz-lex:kendra-search-response-question_answer-answer-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I found an excerpt from a helpful document: ((x-amz-lex:kendra-search-response-document-1))"
+            },
+            {
+              "groupNumber": 1,
+              "contentType": "PlainText",
+              "content": "I think the answer to your questions is ((x-amz-lex:kendra-search-response-answer-1))"
+            }
+          ]
+        },
+        "kendraConfiguration": {
+          "kendraIndex": "arn:aws:kendra:region:1234567890:index/0c8e32db",
+          "queryFilterString": "",
+          "role": "arn:aws:iam::1234567890:role/Role"
+        }
+      }
+    ],
+    "voiceId": "0",
+    "childDirected": false,
+    "locale": "en-US",
+    "idleSessionTTLInSeconds": 300,
+    "abortStatement": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "Sorry, I could not understand. Please try again."
+        }
+      ]
+    },
+    "detectSentiment": true
+  }
+}

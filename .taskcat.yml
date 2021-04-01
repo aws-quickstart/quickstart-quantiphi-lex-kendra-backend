@@ -1,0 +1,28 @@
+project:
+  name: quickstart-quantiphi-lex-kendra-backend
+  owner: quickstart@amazon.com
+  package_lambda: false
+  lambda_zip_path: ./functions/packages/
+  regions:
+    - eu-west-1
+    - us-west-2
+    - us-east-2
+  parameters:
+    QSS3BucketName: $[taskcat_autobucket]
+    QSS3BucketRegion: $[taskcat_current_region]
+    KendraS3BucketName: $[taskcat_getval_QSS3BucketName] #Put your bucket name with Kendra docs here. Make sure the bucket is in the same region where template is being launched
+    KendraFAQFileKey: COVID_FAQ.csv #Put you FAQ file key here. The file should be in the same bucket as Kendra documents Bucket
+    LexBotJSONKey: assets/lex-bot-template/covid_bot_Export.json
+    AssumingAccountID: 213747939285
+    ExternalID: 1234
+  template: ./templates/lex_bot_kendra_master.template.yaml
+tests:
+  quickstart-quantiphi-test-1:
+    regions: 
+    - eu-west-1
+  quickstart-quantiphi-test-2:
+    regions: 
+    - us-west-2
+  quickstart-quantiphi-test-3:
+    regions: 
+    - us-east-1

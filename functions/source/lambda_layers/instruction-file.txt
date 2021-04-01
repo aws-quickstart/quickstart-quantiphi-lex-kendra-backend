@@ -1,0 +1,13 @@
+Steps to setup Lambda Layer used in the code:
+1. Create a folder named python, navigate your way into the folder
+2. Then, run the following commands
+     pip install crhelper -t .
+     pip install boto3 -t .
+
+2. The above mentioned commands will install all the required libraries in a folder.
+4. Zip the folder with all the libraries and upload it to S3
+
+			Or
+
+In the packages folder, navigate to lambda_layers folder, use the zip provided directly for setting up of the lambda layers.
+Take the zip, and upload it to S3.
