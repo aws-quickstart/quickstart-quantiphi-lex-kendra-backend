@@ -50,12 +50,6 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonLexReadOnly"
         - "arn:aws:iam::aws:policy/AmazonLexRunBotsOnly"
 
-  LexSLRole:
-    Type: AWS::IAM::ServiceLinkedRole
-    Properties:
-      AWSServiceName: lex.amazonaws.com
-      Description: Amazon Lex Service Lined Role
-
   LexBotIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -211,4 +205,3 @@ Outputs:
   LexBotName:
     Description: Lex Bot Name
     Value: !GetAtt LexBotOpsFunctionTrigger.BotName
-
