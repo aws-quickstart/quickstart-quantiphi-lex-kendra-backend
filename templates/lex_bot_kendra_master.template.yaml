@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: A master template which creates a Lex Bot and integrate it with a Kendra Index with S3 bucket as a document respository. (qs-1qu380l7l)
+Description: A primary template which creates a Lex Bot and integrate it with a Kendra Index with S3 bucket as a document respository. (qs-1qu380l7l)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Parameters for launching stack creation"
@@ -167,7 +167,7 @@ Resources:
           - "logs:CreateLogStream"
           - "logs:PutLogEvents"
           Resource:
-          - arn:aws:logs:*:*:*
+          - !Sub "arn:${AWS::Partition}:logs:*:*:*"
         - Effect: Allow
           Action:
           - "s3:GetObject"
@@ -176,23 +176,23 @@ Resources:
           - "s3:PutObjectTagging"
           - "s3:DeleteObject"
           Resource:
-          - "arn:aws:s3:*:*:accesspoint/*"
+          - !Sub "arn:${AWS::Partition}:s3:*:*:accesspoint/*"
           - !Join
             - ''
-            - - 'arn:aws:s3:::'
+            - - !Sub 'arn:${AWS::Partition}:s3:::'
               - !Ref RegionalArtifactBucket
           - !Join
             - ''
-            - - 'arn:aws:s3:::'
+            - - !Sub 'arn:${AWS::Partition}:s3:::'
               - !Ref RegionalArtifactBucket
               - '/*'
           - !Join
             - ''
-            - - 'arn:aws:s3:::'
+            - - !Sub 'arn:${AWS::Partition}:s3:::'
               - !Ref QSS3BucketName
           - !Join
             - ''
-            - - 'arn:aws:s3:::'
+            - - !Sub 'arn:${AWS::Partition}:s3:::'
               - !Ref QSS3BucketName
               - '/*'
         - Effect: Allow

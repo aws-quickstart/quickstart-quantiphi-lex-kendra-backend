@@ -47,8 +47,8 @@ Resources:
             StringEquals:
               sts:ExternalId: !Ref ExternalID
       ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/AmazonLexReadOnly"
-        - "arn:aws:iam::aws:policy/AmazonLexRunBotsOnly"
+        - !Sub "arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonLexReadOnly"
+        - !Sub "arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonLexRunBotsOnly"
 
   LexBotIAMRole:
     Type: AWS::IAM::Role
@@ -84,7 +84,7 @@ Resources:
           - "logs:CreateLogStream"
           - "logs:PutLogEvents"
           Resource:
-          - arn:aws:logs:*:*:*
+          - !Sub "arn:${AWS::Partition}:logs:*:*:*"
         - Effect: Allow
           Action:
           - "s3:GetObject"
@@ -92,7 +92,7 @@ Resources:
           - "s3:HeadBucket"
           Resource:
           - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}"
-          - "arn:${AWS::Partition}:s3:*:*:accesspoint/*"
+          - !Sub "arn:${AWS::Partition}:s3:*:*:accesspoint/*"
           - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}/*"
         - Effect: Allow
           Action:
