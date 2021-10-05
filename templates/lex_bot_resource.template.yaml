@@ -91,9 +91,9 @@ Resources:
           - "s3:ListBucket"
           - "s3:HeadBucket"
           Resource:
-          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
-          - "arn:aws:s3:*:*:accesspoint/*"
-          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
+          - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}"
+          - "arn:${AWS::Partition}:s3:*:*:accesspoint/*"
+          - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}/*"
         - Effect: Allow
           Action:
           - "lex:DeleteBot"
