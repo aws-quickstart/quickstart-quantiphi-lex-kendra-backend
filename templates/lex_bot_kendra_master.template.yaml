@@ -176,7 +176,6 @@ Resources:
           - "s3:PutObjectTagging"
           - "s3:DeleteObject"
           Resource:
-          - !Sub "arn:${AWS::Partition}:s3:*:*:accesspoint/*"
           - !Join
             - ''
             - - !Sub 'arn:${AWS::Partition}:s3:::'
@@ -205,7 +204,8 @@ Resources:
           Action:
           - lambda:InvokeFunction
           Resource:
-          - "*"
+          - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
+
   RegionalArtifactBucket:
     Type: AWS::S3::Bucket
 
@@ -325,7 +325,6 @@ Resources:
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         ArtifactsS3BucketName: !Ref 'RegionalArtifactBucket'
         KendraS3BucketName: !Ref KendraS3BucketName
-
   LexBotStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
