@@ -1,1 +1,18 @@
-// placeholder
+
+:template_aws_cloudformation_stack:
+:template_aws_iam_policy:
+:template_aws_iam_role:
+:template_aws_lambda_function:
+:template_aws_lambda_layerversion:
+:template_aws_lambda_permission:
+:template_aws_s3_bucket:
+:template_cloudformation:
+:template_copyzips:
+:template_custom_copyzips:
+:template_custom_kendracustomresource:
+:template_custom_lexbotopsfunctiontrigger:
+:template_iam:
+:template_kendracustomresource:
+:template_lambda:
+:template_lexbotopsfunctiontrigger:
+:template_s3:
