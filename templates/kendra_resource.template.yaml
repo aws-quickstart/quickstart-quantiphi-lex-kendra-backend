@@ -80,30 +80,35 @@ Resources:
           - "logs:CreateLogStream"
           - "logs:PutLogEvents"
           Resource:
-          - arn:aws:logs:*:*:*
+           !Sub "arn:${AWS::Partition}:logs:*:*:*"
         - Effect: Allow
           Action:
           - "s3:GetObject"
           - "s3:ListBucket"
           - "s3:HeadBucket"
           Resource:
-          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}"
-          - "arn:aws:s3:*:*:accesspoint/*"
-          - !Sub "arn:aws:s3:::${ArtifactsS3BucketName}/*"
-          - !Sub "arn:aws:s3:::${KendraS3BucketName}"
-          - !Sub "arn:aws:s3:::${KendraS3BucketName}/*"
+          - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}"
+          - !Sub "arn:${AWS::Partition}:s3:::${ArtifactsS3BucketName}/*"
+          - !Sub "arn:${AWS::Partition}:s3:::${KendraS3BucketName}"
+          - !Sub "arn:${AWS::Partition}:s3:::${KendraS3BucketName}/*"
+        - Effect: Allow
+          Action:
+          - "kendra:CreateIndex"
+          Resource:
+          - "*"
         - Effect: Allow
           Action:
           - "kendra:DeleteIndex"
           - "kendra:CreateDataSource"
           - "kendra:DescribeIndex"
-          - "kendra:CreateIndex"
           - "kendra:StartDataSourceSyncJob"
           - "kendra:CreateFaq"
           - "kendra:TagResource"
           - "kendra:UntagResource"
           Resource:
-          - "*"
+          - !Sub "arn:${AWS::Partition}:kendra:${AWS::Region}:${AWS::AccountId}:index/*"
+          - !Sub "arn:${AWS::Partition}:kendra:${AWS::Region}:${AWS::AccountId}:index/*/data-source/*"
+          - !Sub "arn:${AWS::Partition}:kendra:${AWS::Region}:${AWS::AccountId}:index/*/faq/*"
         - Effect: Allow
           Action:
           - "iam:GetRole"
@@ -116,7 +121,7 @@ Resources:
           - "lambda:AddPermission"
           - "lambda:RemovePermission"
           Resource:
-          - "*"
+          - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
         - Effect: Allow
           Action:
           - "events:PutRule"
@@ -124,7 +129,7 @@ Resources:
           - "events:PutTargets"
           - "events:RemoveTargets"
           Resource:
-          - "*"
+          - !Sub "arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*"
 
   KendraOperationsFunction:
     DependsOn:
