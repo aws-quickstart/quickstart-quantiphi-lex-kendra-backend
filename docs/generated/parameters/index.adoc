@@ -1,3 +1,1 @@
-
-=== Parameters for launching stack creation
-include::lex_bot_kendra_master.template.adoc[]
+// placeholder
