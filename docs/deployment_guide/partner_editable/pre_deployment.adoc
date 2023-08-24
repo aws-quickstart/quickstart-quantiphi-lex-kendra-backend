@@ -1,3 +1,9 @@
 //Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
 
 == Predeployment steps
+
+=== Prepare for the deployment
+
+Before launching the CloudFormation templates and deploying the Quick Start, be sure that you have an Amazon S3 bucket in place. This S3 bucket should contain the documents that you want to be indexed by Amazon Kendra to provide answers to user questions. This S3 bucket is your document repository for the Lex chatbot, and is used as a data source by Amazon Kendra. You can bring your own S3 bucket or use Quantiphi's S3 bucket (s3://quickstart-quantiphi-lex-kendra/) with sample documents as an example.
+
+The https://fwd.aws/j4R5m[Quick Start repository] contains a sample FAQ file that you can upload to the S3 bucket and use for testing after you deploy the Quick Start. See link:#_test_the_deployment[Test the deployment] for more information.

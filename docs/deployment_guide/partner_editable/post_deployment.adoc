@@ -1,3 +1,13 @@
-// Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
-
 == Postdeployment steps
+
+=== Test the deployment
+
+To test the deployment using Quantiphi's S3 bucket with the sample documents, perform these steps:
+
+. Go to the Amazon Lex console, find the bot named _self_service_lex_bot_, and choose *Test Chatbot* to start the conversation. 
+. Test the Amazon Lex chatbot intents by typing ‘Hi’. You should receive the following response: _‘Amazon Lex: Hello! I am the COVID-19 Rapid Response Bot! You can ask me questions related to COVID-19. As a disclaimer, I'm not responsible for providing professional medical advice, diagnosis or treatment. If you are experiencing life threatening emergency, please call 911. How can I help?’_
+. Test the Amazon Kendra search capabilities and connection with Amazon Lex by typing ‘What preventive measures can I take?’. You should receive the following response: _On searching the Enterprise repository, I have found the following answer in the FAQs. Wash your hands often, avoid close contact with people and cover your mouth and nose with a cloth face cover when around people, monitor your health, clean and disinfect frequently touched surfaces daily.’_
+
+=== Other useful information
+
+You can use a custom user interface or third-party product as a front end for users to interact with and submit questions. As a back end, use the Amazon Lex chatbot that is deployed with this Quick Start to connect with Amazon Kendra to answer user questions.

@@ -1,10 +1,7 @@
 This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
 
-// Fill in the info in <angle brackets> for use on the landing page only: 
-This Amazon Web Services (AWS) Partner Solution deploys [<product name>](<partner's marketing product page>) in the AWS Cloud so that <purpose>. This solution is for <target users> who want to <do what> so that <why>. For more information, refer to the [<product name> documentation](<URL>).
+This Amazon Web Services (AWS) Partner Solution deploys an Amazon Kendra index along with a data source that uses an Amazon Simple Storage Service (Amazon S3) bucket as the document repository, and then integrates them with an Amazon Lex chatbot. Organizations can use this Partner Solution to enhance the search and fulfillment capabilities of their Amazon Lex chatbot by letting users query the enterprise data repository using Amazon Kendra.
 
-// Deploying this solution does not guarantee an organization’s compliance with any laws, certifications, policies, or other regulations. [Uncomment this statement only for solutions that relate to compliance. We'll add the corresponding reference part to the landing page and get legal approval before publishing.]
+This Partner Solution lets third-party products integrate with Amazon Lex and Amazon Kendra to provide answers to user questions that originate from a document search interface.
 
-// For advanced information about the product, troubleshooting, or additional functionality, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/operational/index.html[Operational Guide^].
-
-// For information about using this Partner Solution for migrations, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/migration/index.html[Migration Guide^].
+This Partner Solution creates an Amazon Lex chatbot with an Amazon Kendra index. The index is linked to an Amazon S3 bucket data repository, which contains a sample FAQ document for testing. The Amazon Lex chatbot is connected to the Amazon Kendra index via the Amazon Kendra search intent.
